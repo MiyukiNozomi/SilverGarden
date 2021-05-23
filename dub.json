@@ -1,0 +1,11 @@
+{
+	"authors": [
+		"Miyuki"
+	],
+	"copyright": "Copyright 2021 @Miyuki",
+	"description": "A ShinoaCompiler",
+	"license": "EPL",
+	"targetName": "shinoac",
+	"targetType": "executable",
+	"name": "shinoacompiler"
+}

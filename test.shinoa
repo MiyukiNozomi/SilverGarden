@@ -1,0 +1,11 @@
+import "shinoa.console";
+
+public class test {
+
+    public static extern int main() {
+        
+        Console.log("Hello, World!");
+
+        return 0;
+    }
+}
