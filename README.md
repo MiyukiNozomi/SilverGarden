@@ -1,5 +1,5 @@
 # ShinoaCompiler
-A Programming language that is compiled to C. nothing else.
+The Compiler of a programming language that is compiled to C. nothing else.
 its class-based, static-typed with all things that C has.
 
 # Things that i have to add.
