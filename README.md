@@ -91,9 +91,9 @@ void MethodAndFieldExample_foo(MethodAndFieldExample* instance) {
 }
 ```
 
-#Important: there are no constructors
+*Important: there are no constructors
 
-#Static Methods and Fields
+# Static Methods and Fields
 For both of them, they are just defined in C as a static variable with the class name in the begining
 
 ```java
