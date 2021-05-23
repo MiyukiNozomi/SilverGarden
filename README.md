@@ -28,7 +28,8 @@ public class Test { //class definition
 
 # The Expected Result
 
-the expected result should be this: ```c
+the expected result should be this: 
+```c
 #include <shinoa_console.h>
 typedef struct {
 } Test;
