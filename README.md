@@ -80,7 +80,8 @@ public class MethodAndFieldExample {
 }
 ```
 
-to C ```c
+to C 
+```c
 typedef struct {
 	int a;
 } MethodAndFieldExample;
