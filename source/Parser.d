@@ -155,22 +155,21 @@ public class Parser {
 
         VariableType type;
 
-        if (t.getType() == TokenType.ID_PRIVATE) {
-            isPrivate = true;
-            isProtected = false;
-            isPublic = false;
-        } else if (t.getType() == TokenType.ID_PUBLIC) {
-            isPrivate = false;
-            isProtected = false;
-            isPublic = true;
-        } else if (t.getType() == TokenType.ID_PROTECTED) {
-            isPrivate = false;
-            isProtected = true;
-            isPublic = false;
-        } else {
-            printErrorHeader();
-            write("in a field or method declaration, its expected an access modifier, not ", t.getToken());
-            return false;
+
+        switch(t.getType()) {
+            case TokenType.ID_PRIVATE:
+                isPrivate = true:
+                break;
+            case TokenType.ID_PUBLIC:
+                isPublic = true;
+                break;
+            case TokenType.ID_PROTECTED:
+                isProtected = true;
+                break;
+            default:
+                printErrorHeader()
+                write("in a field or method declaration, its expected an access modifier, not ", t.getToken());
+                return false;
         }
 
         t = tokenizer.nextToken();
