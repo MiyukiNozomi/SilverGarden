@@ -1,0 +1,7 @@
+import extern "stdlib.h";
+
+public class Console {
+    public static void log(String message) {
+        printf(message,"\n");
+    }
+}

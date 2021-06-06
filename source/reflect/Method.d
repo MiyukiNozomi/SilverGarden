@@ -1,11 +1,12 @@
 module shinoa.reflect.Method;
 
+import shinoa.util.List;
+import shinoa.reflect.Token;
 import shinoa.reflect.Variable;
 
-public class Method {
-
-    private VariableType type;
-    private string name;
-
-    private bool _public, _private, _protected;
+public struct Method {
+    public VariableType type;
+    public string name;
+    public bool isExtern, isStatic, isPublic, isPrivate, isProtected;
+    public List!Token args,code;
 }

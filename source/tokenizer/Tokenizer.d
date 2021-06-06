@@ -32,7 +32,7 @@ public class Tokenizer {
 		tokenDatas.add(new TokenData("^((-)?[0-9]+)",TokenType.INT_LITERAL));
 		tokenDatas.add(new TokenData("^(\".*\")",TokenType.STRING_LITERAL));
         
-        string[] symbols = ["=", "\\(", "\\)","\\{","\\}", "\\.", "\\,","\\:","\\;","\\+","\\-","\\/","\\%"];
+        string[] symbols = ["=", "\\(", "\\)","\\{","\\}", "\\.", "\\,","\\:","\\;","\\+","\\-","\\_","\\/","\\%"];
         
 		foreach(string t ; symbols) {
 			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.TOKEN));
@@ -103,7 +103,7 @@ public class Tokenizer {
 				return TokenType.ID_FLOAT;
 			case "long":
 				return TokenType.ID_LONG;
-			case "string":
+			case "String":
 				return TokenType.ID_STRING;
 			case "char":
 				return TokenType.ID_CHAR;
@@ -117,6 +117,8 @@ public class Tokenizer {
 				return TokenType.ID_RETURN;
 			case "unsigned":
 				return TokenType.ID_UNSIGNED;
+			case "void":
+				return TokenType.ID_VOID;
 			default:
 				return TokenType.IDENTIFIER;
 		}

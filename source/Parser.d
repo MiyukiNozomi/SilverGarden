@@ -2,12 +2,14 @@ module shinoa.reflect.Parser;
 
 import std.stdio;
 
+import shinoa.util.List;
 import shinoa.reflect.Class;
 import shinoa.reflect.Token;
 import shinoa.reflect.Tokenizer;
 import shinoa.reflect.Field;
 import shinoa.reflect.Method;
 import shinoa.reflect.Variable;
+import shinoa.reflect.ImportData;
 
 import shinoa.lang.terminal;
 
@@ -41,17 +43,30 @@ public class Parser {
     }
 
     public bool parseClassDefinition() {
+
+        List!ImportData imports = new ArrayList!ImportData();
+
         while (tokenizer.hasNextToken()) {
             Token t = tokenizer.nextToken();
 
             if (t.getType() == TokenType.ID_IMPORT) {
                 t = tokenizer.nextToken();
 
+                bool isExtern;
+                string targetModule;
+
+                if (t.getType() == TokenType.ID_EXTERN) {
+                    isExtern = true;
+                    t = tokenizer.nextToken();
+                }
+
                 if (t.getType() != TokenType.STRING_LITERAL) {
                     printErrorHeader();
                     write("in an import statment, it was expected a STRING_LITERAL not a ", t.getToken());
                     return false;
                 }
+
+                targetModule = t.getToken();
 
                 t = tokenizer.nextToken();
 
@@ -60,6 +75,10 @@ public class Parser {
                     write("in an import statment, it was expected a semicolon, not ", t.getToken());
                     return false;
                 }
+
+                ImportData data = {isExtern, targetModule};
+
+                imports.add(data);
             } else if (t.getType() == TokenType.ID_PUBLIC) {
                 t = tokenizer.nextToken();
 
@@ -82,7 +101,7 @@ public class Parser {
                     return false;
                 }
 
-                clazz = new Class(isStruct, t.getToken());
+                clazz = new Class(isStruct, t.getToken(), imports);
 
                 t = tokenizer.nextToken();
 
@@ -117,21 +136,10 @@ public class Parser {
             return false;
         }
 
-        bool endOfTheClass = false;
         int skip = 0;
 
-        while (!endOfTheClass) {
+        while (true) {
             Token t = tokenizer.nextToken();
-
-            if (t.getType() == TokenType.EMPTY) {
-                printErrorHeader();
-                write("Bad Formated class Structure.");
-                return false;
-            }
-
-            if(!parseClassField()) {
-                return false;
-            }
 
             if (t.getToken() == "{") {
                 skip++;
@@ -139,19 +147,176 @@ public class Parser {
 
             if (t.getToken() == "}") {
                 if (skip == 0)
-                    endOfTheClass = true;
+                    break;
                 else
                     skip--;
+            }
+
+            if (t.getType() == TokenType.EMPTY) {
+                printErrorHeader();
+                write("Bad Formated class Structure.");
+                return false;
+            }
+
+            if(!parseClassField(t)) {
+                return false;
             }
         }
 
         return true;
     }
 
-    public bool parseClassField() {
-        bool isPrivate,isProtected,isPublic, isStatic, isExtern;
+    public bool parseClassField(Token t) {
+        bool isPublic,isPrivate,isProtected,isStatic,isExtern;
 
-        Token t = tokenizer.lastToken;
+        if (t.getType() == TokenType.ID_PUBLIC)
+            isPublic = true;
+        else if (t.getType() == TokenType.ID_PRIVATE)
+            isPrivate = true;
+        else if (t.getType() == TokenType.ID_PROTECTED)
+            isProtected = true;
+        else {
+            printErrorHeader();
+            writeln("Expected a valid access modifier. not ", t.getToken());
+            return false;
+        }
+
+        t = tokenizer.nextToken();
+        
+        if (t.getType() == TokenType.ID_STATIC) {
+            isStatic = true;
+            t = tokenizer.nextToken();
+        }
+        
+        if (t.getType() == TokenType.ID_EXTERN) {
+            isExtern = true;
+            t = tokenizer.nextToken();
+        }
+
+
+        bool isUnsigned = false;        
+
+        if (t.getType() == TokenType.ID_UNSIGNED) {
+            isUnsigned = true;
+            t = tokenizer.nextToken();
+        }
+
+        VariableType type = getTypeFor(t.getType(),isUnsigned);
+
+        if (type == VariableType.NULL) {
+            printErrorHeader();
+            writeln("Expected a valid type. not: ", t.getToken());
+            return false;
+        } else {
+            t = tokenizer.nextToken();
+        }
+
+        string fieldName;
+
+        while (true) {
+            if (t.getToken() == ";" || t.getToken() == "(" || t.getToken() == "=")  {
+                break; 
+            }
+        
+            if (t.getType() == TokenType.INT_LITERAL) {
+                if (fieldName.length < 1) {
+                    printErrorHeader();
+                    writeln("Invalid variable name. you can't begin a variable or method name with a number");
+                    return false;
+                }
+            }
+
+            if (t.getType() == TokenType.TOKEN) {
+                if (t.getToken() != "_") {
+                    printErrorHeader();
+                    writeln("Invalid variable name. invalid symbol, the only accepted symbol is _");
+                    return false;
+                }
+            }
+            fieldName ~= t.getToken();
+            
+            t = tokenizer.nextToken();
+        }
+
+        List!Token expression = new ArrayList!Token();
+
+        if (t.getToken() == ";") {
+        } else if (t.getToken() == "=") {
+
+            t = tokenizer.nextToken();
+
+            while (t.getToken() != ";") {
+                expression.add(t);
+                t = tokenizer.nextToken();
+            }
+        } else if (t.getToken() == "(") {
+            List!Token args = new ArrayList!Token();
+
+            t = tokenizer.nextToken();
+
+            while (t.getToken() != ")") {
+                args.add(t);
+                t = tokenizer.nextToken();
+            }
+
+            t = tokenizer.nextToken();
+            
+            if (t.getToken() != "{") {
+                printErrorHeader();
+                writeln("Expected a Method Entry. not ", t.getToken());
+                return false;
+            }
+
+            t = tokenizer.nextToken();
+
+            int skip = 0;
+
+            List!Token code = new ArrayList!Token();
+
+            while (true) {
+                if (t.getType() == TokenType.EMPTY) {
+                    printErrorHeader();
+                    write("Bad Formated method Structure.");
+                    return false;
+                }
+
+                code.add(t);
+
+                if (t.getToken() == "{") {
+                    skip++;
+                }
+
+                if (t.getToken() == "}") {
+                    if (skip == 0)
+                        break;
+                    else
+                        skip--;
+                }
+
+                t = tokenizer.nextToken();
+            }
+
+            
+            Method method = {type, fieldName, isExtern, isStatic, isPublic, isPrivate, isProtected, args, code};
+            clazz.getMethods().add(method);
+            return true;
+        } else {
+            printErrorHeader();
+            writeln("Expected a semicolon, not ", t.getToken()); 
+            return false;
+        }
+        
+        Field field = {type, fieldName, isStatic, isPublic, isPrivate, isProtected, expression};
+
+        clazz.getFields().add(field);
+        return true;
+    }
+
+    /**
+        this is fucking retardard
+    */
+   /* public bool parseClassField(Token t) {
+        bool isPrivate,isProtected,isPublic, isStatic, isExtern;
 
         VariableType type;
 
@@ -251,7 +416,7 @@ public class Parser {
             writeln("Expected a semicolon or a bracket (semicolon for a field, and bracket for a method)");
             return false;
         }
-    }
+    }*/
 
     private void printErrorHeader() {
         writeln();

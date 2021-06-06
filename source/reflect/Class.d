@@ -3,6 +3,7 @@ module shinoa.reflect.Class;
 import shinoa.util.List;
 import shinoa.reflect.Field;
 import shinoa.reflect.Method;
+import shinoa.reflect.ImportData;
 
 public class Class {
     
@@ -11,10 +12,15 @@ public class Class {
 
     private List!Field fields;
     private List!Method methods;
+    private List!ImportData imports;
 
-    public this(bool _truct,string className) {
+    public this(bool _struct,string className, List!ImportData importData) {
         this._struct = _struct;
         this.className = className;
+
+        this.fields = new ArrayList!Field();
+        this.methods = new ArrayList!Method();
+        this.imports = importData;
     }
 
     public bool isStruct() {
@@ -32,4 +38,8 @@ public class Class {
     public List!Method getMethods() {
         return methods;
     }    
+
+    public List!ImportData getImports() {
+        return imports;
+    }
 }

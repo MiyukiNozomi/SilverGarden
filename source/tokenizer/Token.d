@@ -69,6 +69,7 @@ public enum TokenType {
 	ID_NULL,
 	ID_NULLPTR,
 	ID_RETURN,
+	ID_VOID,
 
 	EMPTY,
 	TOKEN,
