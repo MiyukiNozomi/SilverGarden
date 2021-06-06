@@ -5,12 +5,12 @@ its class-based, static-typed with all things that C has.
 # Things that i have to add.
 * comments
 * structs
-* Import methods from C files
 * a lot of important stuff that i can't remember.
+* Method Calls.
+* Better C Code Generation
 
 # Disclaimer
-this thing is still under development, 
-for now, there is no C code generation for now.
+this thing is still under development (not even finished).
 
 # Syntax
 Example
