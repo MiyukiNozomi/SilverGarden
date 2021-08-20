@@ -1,3 +1,9 @@
+# The Begining of everything.
+this is the first try at a transpiled language that i have ever done.
+this was never finished, but it teached me a lot;
+now you can download the source code, and finish it if you want,
+i just kept it here for historical purposes.
+
 # ShinoaCompiler
 The Compiler of a programming language that is compiled to C. nothing else.
 its class-based, static-typed with all things that C has.
