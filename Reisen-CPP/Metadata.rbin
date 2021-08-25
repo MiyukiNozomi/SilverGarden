@@ -1,6 +1,0 @@
-namespace"Something$Another"
-import"Reisen$Language$Console"
-class"Metadata"
-mainmethod
-call"print"args value-str"Hello, World!"
-endfunc

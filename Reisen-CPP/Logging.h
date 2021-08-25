@@ -5,6 +5,12 @@
 namespace ReisenLanguage$Logging {
 #ifdef _WIN32
 #include <Windows.h>
+#elif defined __linux__
+//do something
+#elif defined __unix__
+//do something
+#else
+#error "Unsupported Platform!"
 #endif
 
 	enum Coloring {

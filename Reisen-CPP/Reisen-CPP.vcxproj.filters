@@ -9,7 +9,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Lexer">
+    <Filter Include="Source Files\Util">
+      <UniqueIdentifier>{2f48c6ae-bcc3-435e-830b-a17787736d8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Metadata">
       <UniqueIdentifier>{cec580e0-9694-405d-a3b1-555896227fa4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -17,32 +20,32 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Lexer.cpp">
-      <Filter>Source Files\Lexer</Filter>
+    <ClCompile Include="ReisenLanguage.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Logging.h">
+      <Filter>Source Files\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="ReisenLanguage.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lexer.h">
-      <Filter>Source Files\Lexer</Filter>
+    <ClInclude Include="Metadata.h">
+      <Filter>Source Files\Metadata</Filter>
     </ClInclude>
-    <ClInclude Include="Token.h">
-      <Filter>Source Files\Lexer</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Metadata.rbin">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="todos.txt">
       <Filter>Source Files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Example.reisen">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

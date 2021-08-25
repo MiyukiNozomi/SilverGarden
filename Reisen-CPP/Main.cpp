@@ -1,11 +1,18 @@
 #include <iostream>
 
-#include "Lexer.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+
 #include "Settings.h"
 #include "Logging.h"
 
+#include "ReisenLanguage.h"
+
+#define stringify( name ) # name
+
 using namespace ReisenLanguage;
-using namespace ReisenLanguage$Lexer;
+using namespace ReisenLanguage$Core;
 using namespace ReisenLanguage$Logging;
 
 int main(int argc, char** args) {
@@ -34,24 +41,38 @@ int main(int argc, char** args) {
 
 	std::cout << std::endl;
 
-	std::cout << "Settings: singleFileExport = " << GlobalSettings.singleFileExport << std::endl;
+	std::ifstream in("Example.reisen", std::ios::binary);
 
-	//lexer test
+	const char* code; 
 
-	Lexer* lexer = new Lexer("namespace\"Something$Another\""
-"import\"Reisen$Language$Console\""
-"class\"Metadata\""
-"mainmethod"
-"call-from\"Console\"\"print\"args value-str\"Hello, World!\""
-"endfunc\0");
+	if (in) {
+		std::string contents;
+	
+		in.seekg(0, std::ios::end);
+		contents.resize(in.tellg());
+		in.seekg(0, std::ios::beg);
+		in.read(&contents[0], contents.size());
+		in.close();
 
-	Console.setColor(Coloring::Light_blue, Coloring::Black);
+		Lexer lexer = Lexer(contents);
 
-	while (!lexer->HasCodeEnded()) {
-		char l = lexer->NextToken();
-		std::cout << " " << l;
+		while (lexer.tk != EofToken) {
+			Console.setColor(Coloring::Light_blue, Coloring::Black);
+			std::cout << "Token: ";
+			Console.setColor(Coloring::White, Coloring::Black);
+			std::cout << lexer.tkStr << std::endl;
+			Console.setColor(Coloring::Light_blue, Coloring::Black);
+			std::cout << " Type: ";
+			Console.setColor(Coloring::White, Coloring::Black);
+			std::cout << lexer.tk << std::endl;
+			lexer.Match(lexer.tk);
+		}
+	} else {
+		Console.setColor(Coloring::Red, Coloring::Black);
+		std::cout << "Unable to find file: Example.reisen" << std::endl;
 	}
 
+	while(true){}
 	Console.resetColor();
 	return 0;
 }
