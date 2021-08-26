@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/reisen-compiler
+reisen-compiler.so
+reisen-compiler.dylib
+reisen-compiler.dll
+reisen-compiler.a
+reisen-compiler.lib
+reisen-compiler-test-*
+*.exe
+*.o
+*.obj
+*.lst
