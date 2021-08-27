@@ -1,2 +1,0 @@
-TO DOS-----------------------------
-1) multiplatform colored logging

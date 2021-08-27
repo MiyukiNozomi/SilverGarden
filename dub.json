@@ -5,5 +5,6 @@
 	"copyright": "Copyright @2021 MiyukiNozomi",
 	"description": "The Reisen Programming Language's Compiler",
 	"license": "proprietary",
+	
 	"name": "reisen-compiler"
 }

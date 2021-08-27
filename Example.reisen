@@ -1,0 +1,7 @@
+namespace Reisen.IO;
+
+extern import "iostream.h";
+
+public sealed void Main(String[] args) {
+	
+}
