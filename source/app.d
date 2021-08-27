@@ -17,7 +17,7 @@ void PrintAndList(string startTab, List!IntermediateChunk chunkList) {
 		Console.setColor(Coloring.LightBlue, Coloring.Black);
 		write(startTab, chunk.operation, " ");
 		Console.setColor(Coloring.White, Coloring.Black);
-		writeln(startTab, chunk.value);
+		writeln(chunk.value);
 
 		if (chunk.children.size() > 0) {
 			PrintAndList(startTab ~ "	",chunk.children);

@@ -73,7 +73,7 @@ public class Lexer {
         
         this.tokenDatas = new ArrayList!TokenData();
 
-        tokenDatas.add(new TokenData("^([a-zA-Z][a-zA-Z0-9]*)",TokenType.Identifier));
+        tokenDatas.add(new TokenData("^([_a-zA-Z][a-zA-Z0-9_]*)",TokenType.Identifier));
 		tokenDatas.add(new TokenData("^((-)?[0-9]\\.[0-9]+)",TokenType.DoubleLiteral));
 		tokenDatas.add(new TokenData("^((-)?0x[0-9]+)",TokenType.HexadecimalLiteral));
 		tokenDatas.add(new TokenData("^((-)?[0-9]+)",TokenType.IntegerLiteral));

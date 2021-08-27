@@ -2,8 +2,4 @@ namespace "reisen.examples"
 
 import "Reisen.UdonCore"
 
-public sealed void Main(String[] args) {
-	byte a = 0x500000;
-
-	Console.Println("Hello, World!");
-}
+public int a = 0 + 1 + 2 + 3;

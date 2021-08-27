@@ -12,7 +12,8 @@ public enum IntermediateOp {
     CallObject = "c",
     AssignObject = "aset",
     GetObject = "gv",
-    InCaseOfLanguage = "lc"
+    InCaseOfLanguage = "lc",
+    Add = "add",
 }
 
 public class IntermediateChunk {
