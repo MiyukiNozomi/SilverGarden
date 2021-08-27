@@ -13,6 +13,7 @@ void main() {
 	write("DMD Reisen Language Compiler");
 	Console.setColor(Coloring.White, Coloring.Black);
 	writeln(" - Version ",__reisen__);
+	writeln();
 
 	import std.file : readText;
 
@@ -20,7 +21,7 @@ void main() {
 
 	Reisen reisen = new Reisen();
 
-	reisen.Compile(a);
+	reisen.Compile("Example.reisen", a);
 
 	Console.resetColor();
 }

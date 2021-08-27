@@ -16,7 +16,7 @@ string subString(string s, size_t beg, size_t end) {
 
 void getLocation(string text,int textIndex,out int line,out int col) {
     for (int i = 0; i <= textIndex; i++) {
-        if (text[i] == '\n') {
+        if (text[i] == '\n' || text[i] == '\r') {
             ++line;
             col = 0;
         } else {
