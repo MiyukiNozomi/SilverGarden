@@ -1,5 +1,7 @@
 module ReisenLanguage.Lexer;
 
+import std.string;
+import std.regex;
 import java.util.List;
 
 import ReisenLanguage.Helpers;
@@ -14,7 +16,7 @@ enum TokenType {
     Symbol,
 
     EndOfFile,
-    ErrorToken
+    Invalid
 }
 
 public class TokenData {
@@ -37,27 +39,16 @@ public class TokenData {
 }
 
 public class Token {
-	private:
-        string token;
-		int index;
-	    TokenType type;
+	public:
+        string Token;
+		int Length, Position;
+	    TokenType Type;
 
-	public: this(string token,int index, TokenType type) {
-		this.token = token;
-		this.type = type;
-		this.index = index;
-	}
-	
-	public: string getToken() {
-		return token;
-	}
-	
-	public: TokenType getType() {
-		return type;
-	}
-
-	public: int getIndex() {
-		return index;
+	public: this(string token,int position, int length, TokenType type) {
+		this.Token = token;
+		this.Type = type;
+		this.Length = length;
+        this.Position = position;
 	}
 }
 
@@ -66,6 +57,7 @@ public class Lexer {
     private:
         List!TokenData tokenDatas;
         bool pushBack;
+        int lastPos;
         
     public: 
         string code;
@@ -86,6 +78,7 @@ public class Lexer {
 		tokenDatas.add(new TokenData("^(\'.*\')",TokenType.CharLiteral));
         
         string[] symbols = ["=", "\\(", "\\)","\\{","\\}",
+                            "\\[","\\]", "\\-", "\\>",
                             "\\.", "\\,","\\:","\\;","\\+",
                             "\\-","\\_","\\/","\\%", "\\<",
                             "\\>", "\\^", "\\!", "\\|", "\\&"];
@@ -95,7 +88,7 @@ public class Lexer {
 		}
     }
     
-    public: Token nextToken() {
+    public: Token NextToken() {
 		code = code.strip();
 		
 		if(pushBack) {
@@ -104,7 +97,7 @@ public class Lexer {
 		}
 		
 		if(code.length == 0) {
-			return (lastToken = new Token("",0,TokenType.EndOfFile));
+			return (lastToken = new Token("",lastPos + 1, 0,TokenType.EndOfFile));
 		}
 		
 		for (int i = 0; i < tokenDatas.size(); i++) {
@@ -116,25 +109,28 @@ public class Lexer {
             if(!matcher.empty()) {
 				string token = matcher.hit.strip();
 				code = code.subString(token.length,code.length);
+                lastPos += token.length;
                 
 				if(data.getType() == TokenType.StringLiteral || data.getType() == TokenType.CharLiteral) {
-					return (lastToken = new Token(token.subString(1, token.length - 1),cast(int) (code.length - token.length), TokenType.StringLiteral));
+					return (lastToken = new Token(token.subString(1, token.length - 1),lastPos,cast(int) (code.length - token.length), TokenType.StringLiteral));
 				} else if (data.getType() == TokenType.Identifier) {
-					return (lastToken = new Token(token,cast(int) (code.length - token.length), TokenType.Identifier));
+					return (lastToken = new Token(token, lastPos, cast(int) (code.length - token.length), TokenType.Identifier));
 				}else {
-					return (lastToken = new Token(token,cast(int) (code.length - token.length), data.getType()));
+					return (lastToken = new Token(token, lastPos,cast(int) (code.length - token.length), data.getType()));
 				}
 			}
 		}
 
-        return null;
+        lastPos += 1;
+		code = code.subString(1,code.length);
+        return (lastToken = new Token("", lastPos, 1, TokenType.Invalid));
 	}
     
-    public: bool hasNextToken() {
+    public: bool HasNextToken() {
 		return !code.length == 0;
 	}
 	
-	public: void requestPushBack() {
+	public: void RequestPushBack() {
 		if(lastToken is null) {
 			this.pushBack = true;
         }

@@ -1,7 +1,7 @@
-namespace Reisen.IO;
+namespace "reisen.examples";
 
-extern import "iostream.h";
+import "Reisen.UdonCore";
 
 public sealed void Main(String[] args) {
-	
+	Console.Println("Hello, World!");
 }
