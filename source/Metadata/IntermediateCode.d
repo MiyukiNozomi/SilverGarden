@@ -19,10 +19,10 @@ public class IntermediateChunk {
     public:
         IntermediateOp operation;
         string value;
-        List!IntermediateChunk childs;
+        List!IntermediateChunk children;
 
     public this(IntermediateOp operation, string value) {
-        childs = new ArrayList!IntermediateChunk();
+        children = new ArrayList!IntermediateChunk();
         this.operation = operation;
         this.value = value;
     }

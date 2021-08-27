@@ -1,7 +1,9 @@
-namespace "reisen.examples";
+namespace "reisen.examples"
 
-import "Reisen.UdonCore";
+import "Reisen.UdonCore"
 
 public sealed void Main(String[] args) {
+	byte a = 0x500000;
+
 	Console.Println("Hello, World!");
 }

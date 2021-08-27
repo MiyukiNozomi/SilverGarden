@@ -15,6 +15,9 @@ enum TokenType {
     Identifier,
     Symbol,
 
+	// for standartization
+	AccessModifier,
+
     EndOfFile,
     Invalid
 }
@@ -71,9 +74,9 @@ public class Lexer {
         this.tokenDatas = new ArrayList!TokenData();
 
         tokenDatas.add(new TokenData("^([a-zA-Z][a-zA-Z0-9]*)",TokenType.Identifier));
-		tokenDatas.add(new TokenData("^((-)?[0-9]+)",TokenType.IntegerLiteral));
-		tokenDatas.add(new TokenData("^((-)?[0-9].[0-9]+)",TokenType.DoubleLiteral));
+		tokenDatas.add(new TokenData("^((-)?[0-9]\\.[0-9]+)",TokenType.DoubleLiteral));
 		tokenDatas.add(new TokenData("^((-)?0x[0-9]+)",TokenType.HexadecimalLiteral));
+		tokenDatas.add(new TokenData("^((-)?[0-9]+)",TokenType.IntegerLiteral));
 		tokenDatas.add(new TokenData("^(\".*\")",TokenType.StringLiteral));
 		tokenDatas.add(new TokenData("^(\'.*\')",TokenType.CharLiteral));
         
@@ -114,8 +117,13 @@ public class Lexer {
 				if(data.getType() == TokenType.StringLiteral || data.getType() == TokenType.CharLiteral) {
 					return (lastToken = new Token(token.subString(1, token.length - 1),lastPos,cast(int) (code.length - token.length), TokenType.StringLiteral));
 				} else if (data.getType() == TokenType.Identifier) {
-					return (lastToken = new Token(token, lastPos, cast(int) (code.length - token.length), TokenType.Identifier));
-				}else {
+					TokenType type = TokenType.Identifier;
+
+					if (token == "public" || token == "private" || token == "protected")
+						type = TokenType.AccessModifier;
+					
+					return (lastToken = new Token(token, lastPos, cast(int) (code.length - token.length), type));
+				} else {
 					return (lastToken = new Token(token, lastPos,cast(int) (code.length - token.length), data.getType()));
 				}
 			}
