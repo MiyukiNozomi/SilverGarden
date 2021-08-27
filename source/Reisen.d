@@ -5,6 +5,7 @@ import std.stdio;
 import ReisenLanguage.Lexer;
 import ReisenLanguage.Helpers;
 import ReisenLanguage.Console;
+import ReisenLanguage.Intermediate;
 
 class Reisen {
     public:
@@ -14,10 +15,11 @@ class Reisen {
             scanner = new Lexer(source);
 
             while (scanner.HasNextToken()) {
+                IntermediateChunk chunk;
                 Token t = scanner.NextToken();
 
                 if (t.Token == "namespace") {
-
+                    
                 } else {
                     Console.setColor(Coloring.Red, Coloring.White);
                     int line = 1, col = 0;
