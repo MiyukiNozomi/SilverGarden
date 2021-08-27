@@ -2,4 +2,4 @@ namespace "reisen.examples"
 
 import "Reisen.UdonCore"
 
-public int a = 0 + 1 + 2 + 3;
+public int a = 4 * 2 + 1 / 6 % 1;

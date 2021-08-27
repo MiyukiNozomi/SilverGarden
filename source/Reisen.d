@@ -150,7 +150,33 @@ class Reisen {
                         t = scanner.NextToken();
                         if (t.Token == ";" || t.Type == TokenType.EndOfFile)
                             break;                       
-                        if (t.Token == "+") {
+                        if (t.Type == TokenType.Symbol) {
+                            IntermediateOp op;
+
+                            switch(t.Token) {
+                                case "+":
+                                    op = IntermediateOp.Add;
+                                    break;
+                                case "-":
+                                    op = IntermediateOp.Subtract;
+                                    break;
+                                case "*":
+                                    op = IntermediateOp.Multiply;
+                                    break;
+                                case "/":
+                                    op = IntermediateOp.Divide;
+                                    break;
+                                case "%":
+                                    op = IntermediateOp.DivisionResult;
+                                    break;
+                                default: {
+                                    PrintError(source, filename, last, "R0012");
+                                    writeln("Expected a valid mathematical operator.");
+                                    return null;
+                                }
+                                    
+                            }
+
                             t = scanner.NextToken();
                             if (t.Type == TokenType.Symbol) {
                                 PrintError(source, filename, last, "R0012");
@@ -158,7 +184,7 @@ class Reisen {
                                 return null;
                             }
 
-                            chunk.children.add(new IntermediateChunk(IntermediateOp.Add, name ~ "," ~ t.Token));
+                            chunk.children.add(new IntermediateChunk(op, name ~ "," ~ t.Token));
                         } else {
                             chunk.children.add(new IntermediateChunk(IntermediateOp.AssignObject, name ~ "," ~ t.Token));
                         }

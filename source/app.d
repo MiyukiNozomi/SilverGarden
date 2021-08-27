@@ -29,7 +29,7 @@ void main() {
 	InitConsole();
 
 	Console.setColor(Coloring.Purple, Coloring.Black);
-	write("DMD Reisen Language Compiler");
+	write("Reisen Language Compiler");
 	Console.setColor(Coloring.White, Coloring.Black);
 	writeln(" - Version ",__reisen__);
 	writeln();

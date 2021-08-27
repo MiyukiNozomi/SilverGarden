@@ -14,6 +14,10 @@ public enum IntermediateOp {
     GetObject = "gv",
     InCaseOfLanguage = "lc",
     Add = "add",
+    Subtract = "sub",
+    Multiply = "mul",
+    Divide = "div",
+    DivisionResult = "divres"
 }
 
 public class IntermediateChunk {
