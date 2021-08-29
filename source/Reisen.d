@@ -25,7 +25,7 @@ class Reisen {
 
                     if (t.Type == TokenType.StringLiteral) {
                         chunk = new IntermediateChunk(IntermediateOp.DefineNamespace, t.Token);
-                    } else {   
+                    } else {
                         PrintError(source, filename, t, "R0005");
                         writeln("Expected a StringLiteral Token for a namespace definition., not \"", t.Token, "\"");
                     }
@@ -42,7 +42,7 @@ class Reisen {
 
                     if (t.Type == TokenType.StringLiteral) {
                         namespace = t.Token;
-                    } else {   
+                    } else {
                         PrintError(source, filename, t, "R0005");
                         writeln("Expected a StringLiteral Token for a import statment., not \"", t.Token, "\"");
                         continue;
@@ -50,7 +50,9 @@ class Reisen {
 
                     chunk = new IntermediateChunk(isExtern ? IntermediateOp.ImportExtern : IntermediateOp.ImportNamespace, namespace);
                 } else if (t.Type == TokenType.AccessModifier) {
+                    string modifier = t.Token;
                     chunk = ParseField(source, filename);
+                    chunk.value ~= "," ~ modifier;
                 } else {
                     if (t.Token == ";")
                         continue;
@@ -66,6 +68,12 @@ class Reisen {
             return intermediateCode;
         }
     private:
+
+        IntermediateChunk ParseOperation(IntermediateChunk chunk, string source, string filename) {
+            
+            return chunk;
+        }
+
         IntermediateChunk ParseField(string source, string filename) {
             Token t = scanner.NextToken();
 
@@ -144,57 +152,7 @@ class Reisen {
                 } else if (t.Token == "=") {
                     IntermediateChunk chunk = new IntermediateChunk(IntermediateOp.DefineVar, type ~ "," ~ name);
 
-                    Token last = t;
-
-                    while (t.Token != ";" && t.Type != TokenType.EndOfFile) {
-                        t = scanner.NextToken();
-                        if (t.Token == ";" || t.Type == TokenType.EndOfFile)
-                            break;                       
-                        if (t.Type == TokenType.Symbol) {
-                            IntermediateOp op;
-
-                            switch(t.Token) {
-                                case "+":
-                                    op = IntermediateOp.Add;
-                                    break;
-                                case "-":
-                                    op = IntermediateOp.Subtract;
-                                    break;
-                                case "*":
-                                    op = IntermediateOp.Multiply;
-                                    break;
-                                case "/":
-                                    op = IntermediateOp.Divide;
-                                    break;
-                                case "%":
-                                    op = IntermediateOp.DivisionResult;
-                                    break;
-                                default: {
-                                    PrintError(source, filename, last, "R0012");
-                                    writeln("Expected a valid mathematical operator.");
-                                    return null;
-                                }
-                                    
-                            }
-
-                            t = scanner.NextToken();
-                            if (t.Type == TokenType.Symbol) {
-                                PrintError(source, filename, last, "R0012");
-                                writeln("Expected a valid mathematical operation.");
-                                return null;
-                            }
-
-                            chunk.children.add(new IntermediateChunk(op, name ~ "," ~ t.Token));
-                        } else {
-                            chunk.children.add(new IntermediateChunk(IntermediateOp.AssignObject, name ~ "," ~ t.Token));
-                        }
-                    }
-
-                    if (t.Type == TokenType.EndOfFile) {
-                        PrintError(source, filename, last, "R0011");
-                        writeln("Expected a semicolon.");
-                        return null;
-                    }
+                    chunk = ParseOperation(chunk, )
 
                     return chunk;
                 } else if (t.Token == ";") {
@@ -204,15 +162,15 @@ class Reisen {
                     writeln("Expected a field or method body");
                     return null;
                 }
-            }   
+            }
 
-            return null;               
+            return null;
         }
     
         void PrintError(string source, string filename, Token t, string code) {
             Console.setColor(Coloring.Red, Coloring.White);
             int line = 1, col = 0;
-            getLocation(source, t.Position, line, col); 
+            getLocation(source, t.Position, line, col);
             write("Error R", code," at ", filename);
             Console.setColor(Coloring.Black, Coloring.White);
             write("(", line,",", col, "): ");
