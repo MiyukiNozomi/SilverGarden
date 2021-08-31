@@ -1,10 +1,10 @@
-module ReisenLanguage.Lexer;
+module SilverGarden.Lexer;
 
 import std.string;
 import std.regex;
 import java.util.List;
 
-import ReisenLanguage.Helpers;
+import SilverGarden.Helpers;
 
 enum TokenType {
     StringLiteral,

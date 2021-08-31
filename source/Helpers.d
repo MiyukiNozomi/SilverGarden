@@ -1,4 +1,4 @@
-module ReisenLanguage.Helpers;
+module SilverGarden.Helpers;
 
 import std.string;
 import std.array;

@@ -1,0 +1,4 @@
+namespace "SilverGarden.Example"
+
+import "Silver.Core"
+

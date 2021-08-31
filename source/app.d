@@ -2,12 +2,11 @@ import std.stdio;
 
 import java.util.List;
 
-import ReisenLanguage.Intermediate;
-import ReisenLanguage.Console;
-import ReisenLanguage.Lexer;
-import ReisenLanguage.Core;
+import SilverGarden.Intermediate;
+import SilverGarden.Console;
+import SilverGarden.Lexer;
 
-int __reisen__ = 0000001;
+string __silver__ = "0400001";
 
 //debuging
 void PrintAndList(string startTab, List!IntermediateChunk chunkList) {
@@ -28,21 +27,15 @@ void PrintAndList(string startTab, List!IntermediateChunk chunkList) {
 void main() {
 	InitConsole();
 
-	Console.setColor(Coloring.Purple, Coloring.Black);
-	write("Reisen Language Compiler");
+	Console.setColor(Coloring.LightBlue, Coloring.Black);
+	write("SilverGarden Compiler");
 	Console.setColor(Coloring.White, Coloring.Black);
-	writeln(" - Version ",__reisen__);
+	writeln(" - Version ",__silver__);
 	writeln();
 
 	import std.file : readText;
 
-	string a = readText("Example.reisen");
 
-	Reisen reisen = new Reisen();
-
-	List!IntermediateChunk finalCode = reisen.Compile("Example.reisen", a);
-
-	PrintAndList("", finalCode);
 
 	Console.resetColor();
 }

@@ -1,4 +1,4 @@
-module ReisenLanguage.Intermediate;
+module SilverGarden.Intermediate;
 
 import java.util.List;
 

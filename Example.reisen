@@ -1,6 +1,0 @@
-namespace "reisen.examples"
-
-import "Reisen.UdonCore"
-
-public int a = 4 * 2 + 1 / 6 % 1;
-public String hello = "0" + "World!;

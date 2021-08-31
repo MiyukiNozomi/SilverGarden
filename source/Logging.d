@@ -1,4 +1,4 @@
-module ReisenLanguage.Console;
+module SilverGarden.Console;
 
 import std.stdio;
 
