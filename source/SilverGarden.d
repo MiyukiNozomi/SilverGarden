@@ -65,37 +65,88 @@ public class SilverCore {
 		while (current.Type != TokenType.EndOfFile) {
 			current = scanner.NextToken();
 
-			if (current.Token == "namespace") {
-				current = scanner.NextToken();
-
-				if (current.Type != TokenType.StringLiteral) {
-					PrintError(UnexpectedToken);
-					return;
-				} else {
-					CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, current.Token);
-				}
-			} else if (current.Token == "ifexp") {
-				current = scanner.NextToken();
-
-				IntermediateChunk langCheck = new IntermediateChunk(IntermediateOp.LanguageCheck, current.Token);
-
-				Match(TokenType.StringLiteral, "Expected a StringLiteral in a Language Check.", "10002");
-				
-				PushOperation(langCheck);
-			} else {
-				PrintError(UnexpectedToken);
-				writeln("Unexpected Token: \"", current.Token, "\"\n");
-			}
+			Statment(CurrentCode);
 		}
 	}
 
-	private void Block() {
+	private void Statment(IntermediateChunk root) {
+		if (current.Token == "import") {
+			current = scanner.NextToken();
+			bool isExtern = false;
 
+			if (current.Token == "extern") {
+				isExtern = true;
+				current = scanner.NextToken();
+			}
+
+			root.children.add(new IntermediateChunk(IntermediateOp.ImportExtern, current.Token));
+
+			Match(TokenType.StringLiteral, "Expected a StringLiteral", UnexpectedToken);
+		} if (current.Token == "namespace") {
+			current = scanner.NextToken();
+
+			if (current.Type != TokenType.StringLiteral) {
+				PrintError(UnexpectedToken);
+				return;
+			}
+			CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, current.Token);
+		} else if (current.Token == "ifexp") { //yeah, duplicated as this can be in both global space, and block space.
+			current = scanner.NextToken();
+
+			IntermediateChunk langCheck = new IntermediateChunk(IntermediateOp.LanguageCheck, current.Token);
+
+			if (!Match(TokenType.StringLiteral, "Expected a StringLiteral in a Language Check.", "10002")) {
+				return;
+			}
+			PushOperation(langCheck);
+
+			if (!Match("{", "Expected a Opening Bracket.", UnexpectedToken))
+				return;
+				
+			Block(langCheck);
+		} else {
+			PrintError(UnexpectedToken);
+			writeln("Unexpected Token: \"", current.Token, "\"\n");
+		}
+	}
+
+	/*
+		Parses a single block.
+
+		a.k.a: 
+
+		{
+		.....
+		}
+	*/
+	private void Block(IntermediateChunk root) {
+		while (true) {
+			if (current.Token == "}")
+				break;
+			if (current.Type == TokenType.EndOfFile) {
+				PrintError(UnexpectedToken);
+				writeln("Expected a method closing bracket, not EOF. ");
+				break;
+			}
+			Statment(root);
+			current = scanner.NextToken();
+		}
+		current = scanner.NextToken();
 	}
 
 	//just to have a clean parser 
 	private bool Match(TokenType expected,string error, string code) {
 		if (current.Type != expected) {
+			PrintError(code);
+			writeln(error);
+			current = scanner.NextToken();
+			return false;
+		}
+		current = scanner.NextToken();
+		return true;
+	}
+	private bool Match(string expected,string error, string code) {
+		if (current.Token != expected) {
 			PrintError(code);
 			writeln(error);
 			current = scanner.NextToken();

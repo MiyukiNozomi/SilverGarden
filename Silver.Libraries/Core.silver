@@ -7,7 +7,7 @@ ifexp "C" {
 public single class Console {
 	public void Println(string message) {
 		ifexp "C" {
-			printf("%s\n",message);
+			extern.printf("%s\n",message);
 		}
 	}
 }
