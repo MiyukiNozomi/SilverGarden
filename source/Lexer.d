@@ -13,6 +13,7 @@ enum TokenType {
     DoubleLiteral,
     HexadecimalLiteral,
     Identifier,
+    Operator,
     Symbol,
 
 	// for standartization
@@ -80,14 +81,17 @@ public class Lexer {
 		tokenDatas.add(new TokenData("^(\".*\")",TokenType.StringLiteral));
 		tokenDatas.add(new TokenData("^(\'.*\')",TokenType.CharLiteral));
         
-        string[] symbols = ["=", "\\(", "\\)","\\{","\\}",
-                            "\\[","\\]", "\\-", "\\>", "\\*",
-                            "\\.", "\\,","\\:","\\;","\\+",
-                            "\\-","\\_","\\/","\\%", "\\<",
-                            "\\>", "\\^", "\\!", "\\|", "\\&"];
+        string[] symbols = ["\\{","\\}","\\[","\\]","\\(","\\)"];
         
 		foreach(string t ; symbols) {
 			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Symbol));
+		}
+
+        string[] operators = ["\\*","\\-","\\+","\\/","\\%","\\=",
+        					"\\^", "\\|", "\\&", "\\<"];
+        
+		foreach(string t ; operators) {
+			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Operator));
 		}
     }
     

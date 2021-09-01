@@ -6,18 +6,6 @@ public enum IntermediateOp {
     DefineNamespace = "dnm",
     ImportNamespace = "nimp",
     ImportExtern = "eimp",
-    DefineMethod = "fdef",
-    DefineVar = "vdef",
-    MainFunc = "mfdef",
-    CallObject = "c",
-    AssignObject = "aset",
-    GetObject = "gv",
-    InCaseOfLanguage = "lc",
-    Add = "add",
-    Subtract = "sub",
-    Multiply = "mul",
-    Divide = "div",
-    DivisionResult = "divres"
 }
 
 public class IntermediateChunk {
