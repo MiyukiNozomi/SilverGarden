@@ -1,3 +1,12 @@
+/*
+	this was originally from "BasicCodings"
+	Scripting Language tutorial, but a little bit improved
+	to not stop the entire program in case of a invalid character.
+
+	i still have to make more reviews here.
+	but its already good enough.
+*/
+
 module SilverGarden.Lexer;
 
 import std.string;
@@ -19,25 +28,26 @@ enum TokenType {
 	// for standartization
 	AccessModifier,
 
+	BeginingOfFile,
     EndOfFile,
     Invalid
 }
 
 public class TokenData {
 	private:
-        string pattern;
-	    TokenType type;
+    	string pattern;
+		TokenType type;
 
-	public: this(string pattern, TokenType type) {
+	public this(string pattern, TokenType type) {
 		this.pattern = pattern;
 		this.type = type;
 	}
 
-	public: string getPattern() {
+	public string getPattern() {
 		return pattern;
 	}
 
-	public: TokenType getType() {
+	public TokenType getType() {
 		return type;
 	}
 }
@@ -48,7 +58,7 @@ public class Token {
 		int Length, Position;
 	    TokenType Type;
 
-	public: this(string token,int position, int length, TokenType type) {
+	public this(string token,int position, int length, TokenType type) {
 		this.Token = token;
 		this.Type = type;
 		this.Length = length;

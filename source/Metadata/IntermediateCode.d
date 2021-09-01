@@ -6,6 +6,7 @@ public enum IntermediateOp {
     DefineNamespace = "dnm",
     ImportNamespace = "nimp",
     ImportExtern = "eimp",
+    LanguageCheck = "iep",
 }
 
 public class IntermediateChunk {
