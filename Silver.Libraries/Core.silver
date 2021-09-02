@@ -3,11 +3,3 @@ namespace "Silver.Core"
 ifexp "C" {
 	import extern "stdio.h"
 }
-
-public single class Console {
-	public void Println(string message) {
-		ifexp "C" {
-			extern.printf("%s\n",message);
-		}
-	}
-}

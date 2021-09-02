@@ -9,6 +9,7 @@ import SilverGarden.Intermediate;
 
 //error codes
 const string UnexpectedToken = "10002";
+const string ValidObject = "10003";
 
 public class SilverCore {
 
@@ -63,26 +64,24 @@ public class SilverCore {
 			* Classes
 		*/
 		while (current.Type != TokenType.EndOfFile) {
-			current = scanner.NextToken();
-
 			Statment(CurrentCode);
 		}
 	}
 
 	private void Statment(IntermediateChunk root) {
-		if (current.Token == "import") {
+		if (current.Token == "import") { //import statments.
 			current = scanner.NextToken();
 			bool isExtern = false;
 
-			if (current.Token == "extern") {
+			if (current.Token == "extern") { // in case its extern
 				isExtern = true;
 				current = scanner.NextToken();
 			}
 
-			root.children.add(new IntermediateChunk(IntermediateOp.ImportExtern, current.Token));
+			root.children.add(new IntermediateChunk(isExtern ? IntermediateOp.ImportExtern : IntermediateOp.ImportNamespace, current.Token));
 
 			Match(TokenType.StringLiteral, "Expected a StringLiteral", UnexpectedToken);
-		} if (current.Token == "namespace") {
+		} if (current.Token == "namespace") { //namespace definition.
 			current = scanner.NextToken();
 
 			if (current.Type != TokenType.StringLiteral) {
@@ -90,12 +89,12 @@ public class SilverCore {
 				return;
 			}
 			CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, current.Token);
-		} else if (current.Token == "ifexp") { //yeah, duplicated as this can be in both global space, and block space.
+		} else if (current.Token == "ifexp") { //amazing, isn't it?
 			current = scanner.NextToken();
 
 			IntermediateChunk langCheck = new IntermediateChunk(IntermediateOp.LanguageCheck, current.Token);
 
-			if (!Match(TokenType.StringLiteral, "Expected a StringLiteral in a Language Check.", "10002")) {
+			if (!Match(TokenType.StringLiteral, "Expected a StringLiteral in a Language Check.", UnexpectedToken)) {
 				return;
 			}
 			PushOperation(langCheck);
@@ -104,10 +103,60 @@ public class SilverCore {
 				return;
 				
 			Block(langCheck);
-		} else {
+		} else if (current.Token == "extern") { //calling a external object.
+			IntermediateChunk externObject = new IntermediateChunk(IntermediateOp.ExternObject, "");
+			
+			current = scanner.NextToken();
+
+			if (!Match(".", "Expected a dot", UnexpectedToken)) {
+				return;
+			}
+
+			Token object = current;
+
+			if (!Match(TokenType.Identifier, "Expected a valid Object.", ValidObject)) {
+				return;
+			}
+
+			//checking if its a constant or method.
+			if (current.Token == "(") { //its a method.
+				while (true) {
+					if (current.Type == TokenType.Identifier) {
+						externObject.children.add(new IntermediateChunk(IntermediateOp.GetObject, current.Token));
+					} else {
+						externObject.children.add(new IntermediateChunk(IntermediateOp.Push, current.Token));
+					}
+
+					current = scanner.NextToken();
+
+					if (current.Token != ",") {
+						break;
+					}
+				}
+				if (!Match(")", "Expected a Close Parenthesis.", UnexpectedToken)) {
+					return;
+				}
+				if (!Match(";", "Expected a semicolon.", UnexpectedToken)) {
+					return;
+				}
+			} else { // its an object.
+				externObject.children.add(new IntermediateChunk(IntermediateOp.GetObject, object.Token));
+				current = scanner.NextToken();
+				if (current.Token != ";") {
+					PrintError(UnexpectedToken);
+					writeln("Expected a semicolon.");
+				}
+			}
+
+			root.children.add(externObject);
+		} else if (current.Type == TokenType.BeginingOfFile) {
+			//ignore...
+		} else { //if silverc didn't recognized the token
 			PrintError(UnexpectedToken);
 			writeln("Unexpected Token: \"", current.Token, "\"\n");
 		}
+
+		current = scanner.NextToken();
 	}
 
 	/*
@@ -121,17 +170,16 @@ public class SilverCore {
 	*/
 	private void Block(IntermediateChunk root) {
 		while (true) {
-			if (current.Token == "}")
-				break;
-			if (current.Type == TokenType.EndOfFile) {
+			if (current.Token == "}") {
+				writeln("AAAAA");
+				return;
+			} else if (current.Type == TokenType.EndOfFile) {
 				PrintError(UnexpectedToken);
 				writeln("Expected a method closing bracket, not EOF. ");
-				break;
+				return;
 			}
 			Statment(root);
-			current = scanner.NextToken();
 		}
-		current = scanner.NextToken();
 	}
 
 	//just to have a clean parser 
@@ -145,6 +193,7 @@ public class SilverCore {
 		current = scanner.NextToken();
 		return true;
 	}
+
 	private bool Match(string expected,string error, string code) {
 		if (current.Token != expected) {
 			PrintError(code);
