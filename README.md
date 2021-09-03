@@ -1,8 +1,18 @@
-# Welcome to the Reisen Programming Language.
+# The Silver Garden
 
-A TypeScript and C# inspired programming language
-and fear not, to make everything better, proprietary! (just kidding, its not proprietary :])
+	Welcome to the Silver Garden Programming Language.
+this language has a long history, as it had about 5 different 
+predecessors. (all predecessors failed, only 2 of them actually
+ended up being usable...) it started as NML, then Naramin, and
+then NAML, and recently, MerryLang. from MerryLang to Shinoa,
+and from Shinoa. to Reisen. and from Reisen, to what you have today.
 
-i'm still working on it so there's no reason to make any examples because this thing is contantly under changes.
-being inspired in typescript and C# is the original idea.
-butttttt you can check the "Example.reisen" and see how it looks like.
+see https://miyukinozomi.github.io/SilverGarden/docs/index.html
+
+# Todo list
+
+* Add Comments
+* Add Classes
+* Add Structs
+* Better Standard Library
+* Back-end.

@@ -1,5 +1,7 @@
 namespace "Silver.Core"
 
 ifexp "C" {
-	import extern "stdio.h"
+	import extern "stdio.h"	
 }
+
+//todo finish this later and add classes.

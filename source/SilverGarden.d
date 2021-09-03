@@ -7,9 +7,22 @@ import SilverGarden.Console;
 import SilverGarden.Helpers;
 import SilverGarden.Intermediate;
 
+/*
+	quick explanation from docs/ErrorCodes.html
+
+	"
+		Errors have their codes bettwen 10000-19999
+		Warnings have their codes bettwen 20000-29999
+		Informations have their codes bettwen 30000-39999
+	                        								"
+*/
+
 //error codes
 const string UnexpectedToken = "10002";
 const string ValidObject = "10003";
+
+//warning codes
+const string DeprecatedOperation = "20001";
 
 public class SilverCore {
 
@@ -44,8 +57,8 @@ public class SilverCore {
 					Call "Println"
 		This is still a high-level representation, because first, 
 		the intermediate code is almost unreadable, because there isn't
-		identation, and second, operation names are shorted into 2-6 characters;
-		don't expect a .sil file to have any tabs, spaces or even lines. 
+		indentation, and second, operation names are shorted from 2 to 6 characters, so
+		don't expect a .sil file to have any tabs, spaces or even multiple lines. 
 	*/
 	public void Compile(string code, string filename) {
 		this.source = code;
@@ -56,135 +69,91 @@ public class SilverCore {
 
 
 		/*
-			In this Phase, SilverC will parse:
-			* Methods
-			* Objects
-			* Constants
-			* Export-Language-Checks
-			* Classes
+			In this Phase, SilverC will parse everything in the global space.
+			this has almost the same functionallity as the Block() method.
+			the difference is instead of working with {}, it works from the 
+			Begining of the file, to the end of the ifle.
 		*/
-		while (current.Type != TokenType.EndOfFile) {
+		while (true) {
+			current = scanner.NextToken();
+			if (current.Type == TokenType.EndOfFile)
+				break;
+
+			if (CurrentCode is null) {
+				CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, "Default"); // avoid problems
+			}
 			Statment(CurrentCode);
 		}
 	}
 
-	private void Statment(IntermediateChunk root) {
-		if (current.Token == "import") { //import statments.
+	private void Statment(IntermediateChunk Root) {
+		if (current.Token == "namespace") {
 			current = scanner.NextToken();
+
+			if (current.Type == TokenType.StringLiteral) 
+				CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, current.Token);
+			else 
+				Match(TokenType.StringLiteral, "Expected a StringLiteral.", UnexpectedToken);
+		} else if (current.Token == "import") {
+			current = scanner.NextToken();
+
 			bool isExtern = false;
 
-			if (current.Token == "extern") { // in case its extern
+			if (current.Token == "extern") {
+				current = scanner.NextToken();
 				isExtern = true;
-				current = scanner.NextToken();
 			}
 
-			root.children.add(new IntermediateChunk(isExtern ? IntermediateOp.ImportExtern : IntermediateOp.ImportNamespace, current.Token));
+			string namespace = current.Token;
 
-			Match(TokenType.StringLiteral, "Expected a StringLiteral", UnexpectedToken);
-		} if (current.Token == "namespace") { //namespace definition.
-			current = scanner.NextToken();
-
-			if (current.Type != TokenType.StringLiteral) {
+			if (current.Type == TokenType.StringLiteral) {
+				Root.children.add(new IntermediateChunk(isExtern ? IntermediateOp.ImportExtern : IntermediateOp.ImportNamespace, namespace));
+			} else {
 				PrintError(UnexpectedToken);
-				return;
+				writeln("Expected a StringLiteral that Represents a namespace.");
 			}
-			CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, current.Token);
-		} else if (current.Token == "ifexp") { //amazing, isn't it?
+		} else if (current.Token == "ifexp") {
 			current = scanner.NextToken();
 
-			IntermediateChunk langCheck = new IntermediateChunk(IntermediateOp.LanguageCheck, current.Token);
+			IntermediateChunk languageCheck;
 
-			if (!Match(TokenType.StringLiteral, "Expected a StringLiteral in a Language Check.", UnexpectedToken)) {
-				return;
-			}
-			PushOperation(langCheck);
+			string lang = current.Token;
 
-			if (!Match("{", "Expected a Opening Bracket.", UnexpectedToken))
-				return;
-				
-			Block(langCheck);
-		} else if (current.Token == "extern") { //calling a external object.
-			IntermediateChunk externObject = new IntermediateChunk(IntermediateOp.ExternObject, "");
-			
-			current = scanner.NextToken();
+			if (Match(TokenType.StringLiteral, "Expected a String Literal", UnexpectedToken)) {
 
-			if (!Match(".", "Expected a dot", UnexpectedToken)) {
-				return;
-			}
-
-			Token object = current;
-
-			if (!Match(TokenType.Identifier, "Expected a valid Object.", ValidObject)) {
-				return;
-			}
-
-			//checking if its a constant or method.
-			if (current.Token == "(") { //its a method.
-				while (true) {
-					if (current.Type == TokenType.Identifier) {
-						externObject.children.add(new IntermediateChunk(IntermediateOp.GetObject, current.Token));
-					} else {
-						externObject.children.add(new IntermediateChunk(IntermediateOp.Push, current.Token));
-					}
-
-					current = scanner.NextToken();
-
-					if (current.Token != ",") {
-						break;
-					}
-				}
-				if (!Match(")", "Expected a Close Parenthesis.", UnexpectedToken)) {
+				if (!Match("{", "Expected a LPAREN", UnexpectedToken))
 					return;
-				}
-				if (!Match(";", "Expected a semicolon.", UnexpectedToken)) {
-					return;
-				}
-			} else { // its an object.
-				externObject.children.add(new IntermediateChunk(IntermediateOp.GetObject, object.Token));
-				current = scanner.NextToken();
-				if (current.Token != ";") {
-					PrintError(UnexpectedToken);
-					writeln("Expected a semicolon.");
-				}
-			}
+				languageCheck = new IntermediateChunk(IntermediateOp.LanguageCheck, lang);
 
-			root.children.add(externObject);
-		} else if (current.Type == TokenType.BeginingOfFile) {
-			//ignore...
-		} else { //if silverc didn't recognized the token
+				Block(languageCheck);
+
+				Root.children.add(languageCheck);
+			}
+		} else {
 			PrintError(UnexpectedToken);
-			writeln("Unexpected Token: \"", current.Token, "\"\n");
+			writeln("Unrecognized Token: ",current.Token, " of type: ", current.Type);
 		}
-
-		current = scanner.NextToken();
 	}
 
-	/*
-		Parses a single block.
-
-		a.k.a: 
-
-		{
-		.....
-		}
-	*/
-	private void Block(IntermediateChunk root) {
+	private void Block(IntermediateChunk Root) {
 		while (true) {
-			if (current.Token == "}") {
-				writeln("AAAAA");
-				return;
-			} else if (current.Type == TokenType.EndOfFile) {
+			if (current.Type == TokenType.EndOfFile) {
 				PrintError(UnexpectedToken);
-				writeln("Expected a method closing bracket, not EOF. ");
-				return;
+				writeln("Expected a RPAREN.");
+				break;
 			}
-			Statment(root);
+			if (current.Token == "}") {
+				break; // just break it. the current block is done ;)
+			}
+
+			Statment(Root);
+			current = scanner.NextToken();
 		}
-	}
+	} 
 
 	//just to have a clean parser 
 	private bool Match(TokenType expected,string error, string code) {
-		if (current.Type != expected) {
+		if (current.Type != expected) { 
 			PrintError(code);
 			writeln(error);
 			current = scanner.NextToken();
@@ -205,12 +174,15 @@ public class SilverCore {
 		return true;
 	}
 
-	private void PushOperation(IntermediateChunk operation) {
-		if (CurrentCode is null)
-			CurrentCode = new IntermediateChunk(IntermediateOp.DefineNamespace, "Default");
-
-		CurrentCode.children.add(operation);
-	}
+	private void PrintWarn(string code) {
+        int line = 1, col = 0;
+        getLocation(source, current.Position, line, col); 
+        Console.setColor(Coloring.Yellow, Coloring.Black);
+        write("S", code, " Error at ", filename);
+        Console.setColor(Coloring.White, Coloring.Black);
+        write("(", line,",", col, "):\n    ");
+        Console.setColor(Coloring.Gray, Coloring.Black);
+    }
 
 	private void PrintError(string code) {
         int line = 1, col = 0;

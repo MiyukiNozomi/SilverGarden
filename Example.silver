@@ -4,5 +4,5 @@ import "Silver.Core"
 
 @EntryPoint
 public void EntryPoint() {
-	Console.Println("Hello, World!");
+	
 }
