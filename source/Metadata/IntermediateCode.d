@@ -7,9 +7,8 @@ public enum IntermediateOp {
     ImportNamespace = "nimp",
     ImportExtern = "eimp",
     LanguageCheck = "iep",
-    ExternObject = "exb",
-    GetObject = "g",
-    Push = "p",
+    EntryPoint = "mn",
+    DefineObject = "df",
 }
 
 public class IntermediateChunk {

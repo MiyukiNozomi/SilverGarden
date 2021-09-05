@@ -19,7 +19,7 @@ import SilverGarden.Intermediate;
 
 //error codes
 const string UnexpectedToken = "10002";
-const string ValidObject = "10003";
+const string InvalidBody = "10003";
 
 //warning codes
 const string DeprecatedOperation = "20001";
@@ -129,10 +129,176 @@ public class SilverCore {
 
 				Root.children.add(languageCheck);
 			}
+		} else if (current.Type == TokenType.AccessModifier) {
+			current = scanner.NextToken();
+
+			/*
+				quick summary here
+
+				"what the heck is this for?"
+
+				EntryPoint's (a.k.a Main()) are required to 
+				match an argument or have none. also, they can't return
+				any value
+
+				EntryPoint Examples
+
+				//standard
+				public @Entry Main() {
+	
+				}
+
+				//with args
+				public @Entry Main(String[] args) {
+	
+				}
+
+				fun fact: the name doesn't matter :)
+			*/
+			if (current.Token == "@Entry") {
+				//skip the name, sorry :)
+				current = scanner.NextToken();
+
+				//just kidding i won't
+				string name = current.Token;
+
+				if (!Match(TokenType.Identifier, "Expected a valid name", UnexpectedToken))
+					return; //avoid people doing bullshit like using { as a name.
+
+				if (!Match("(", "Expected a LPAREN", UnexpectedToken))
+					return;
+
+				string varName = "";
+
+				//now this is kinda of a turning point.
+				if (current.Token == "String") {//requires an argument.
+					current = scanner.NextToken();
+					if (!Match("[", "Expected an Array.", UnexpectedToken))
+						return;
+					if (!Match("]", "Expected an Array.", UnexpectedToken))
+						return;
+
+					if (current.Type != TokenType.Identifier) { //expect valid names
+						PrintError(UnexpectedToken);
+						writeln("Expected a valid name.");
+						return;
+					}
+
+					varName = current.Token;
+
+					current = scanner.NextToken();
+					if (!Match(")", "Expected a RPAREN", UnexpectedToken))
+						return;
+				} else if (current.Token == ")") {
+					//no argument. its fine. just skip it
+					current = scanner.NextToken();
+				}
+
+				if (!Match("{", "Expected a Block.", UnexpectedToken))
+					return;
+
+
+				IntermediateChunk main_func = new IntermediateChunk(IntermediateOp.EntryPoint, (varName != "") ? (name ~ "," ~ varName) : name);
+
+				Block(main_func);
+
+				Root.children.add(main_func);
+			} else { // just another generic field, method or class/struct
+				string name, type;
+
+				if (!Definition(name, type)) {
+					return;
+				}
+
+				IntermediateChunk definement;
+
+				if (current.Token == "(") {
+					//in case its a method
+					while (true) {
+						current = scanner.NextToken();
+						if (current.Token == ")")
+							break;
+						if (current.Type == TokenType.EndOfFile) {
+							PrintError(InvalidBody);
+							writeln("Expected a valid argument body.");
+							return;
+						}
+
+						if (current.Type == TokenType.Identifier) {
+							string type, name;
+							
+						}
+					}
+				} else if (current.Token == "=") {
+					//in case its a expression
+				} else if (current.Token == ";") {
+					//in case its just a field declaration
+					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name);
+				} else {
+					PrintError(UnexpectedToken);
+					writeln("Expected a valid field structure, not \"",current.Token,"\"");
+					return;
+				}
+
+				Root.children.add(definement);
+ 			}
 		} else {
 			PrintError(UnexpectedToken);
 			writeln("Unrecognized Token: ",current.Token, " of type: ", current.Type);
 		}
+	}
+
+
+
+	private bool Definition(out string name, out string type) {
+		//first, type.
+		name = "";
+		type = "";
+
+		if (current.Type != TokenType.Identifier) {
+			PrintError(UnexpectedToken);
+			writeln("Expected a valid type.");
+			return false;
+		}
+
+		type = current.Token;
+
+		current = scanner.NextToken();
+
+		if (current.Token == "*") { //aw fack, pointer!
+			type ~= "*";
+			current = scanner.NextToken();
+		}
+
+		if (current.Token == "&") { //aw fack, reference!
+			type ~= "&";
+			current = scanner.NextToken();
+		}
+
+		if (current.Token == "[") { //aw shit, array!
+			current = scanner.NextToken();
+			if (current.Token == "]") {
+				current = scanner.NextToken();
+				type ~= "[]";
+			} else {
+				PrintError(UnexpectedToken);
+				writeln("tutorial on how to make an array: " ~ type ~ "[], done.");
+				return false;
+			}
+		}
+
+		//now, the name.
+		if (current.Type == TokenType.Identifier) { // valid
+			name = current.Token;
+		} else { // invalid.
+			PrintError(UnexpectedToken);
+			writeln("Expected a valid name :(");
+			return false;
+		}
+
+		current = scanner.NextToken();
+
+		return true;
 	}
 
 	private void Block(IntermediateChunk Root) {

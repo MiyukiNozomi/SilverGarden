@@ -2,7 +2,10 @@ namespace "SilverGarden.Example"
 
 import "Silver.Core"
 
-@EntryPoint
-public void EntryPoint() {
+public void[] a;
+public uint32* b; 
+public Console& c;
+
+public @Entry EntryPoint(String[] something) {
 	
 }
