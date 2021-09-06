@@ -9,6 +9,8 @@ public enum IntermediateOp {
     LanguageCheck = "iep",
     EntryPoint = "mn",
     DefineObject = "df",
+    DefineMethod = "fdf",
+    ArgumentDefine = "ag",
 }
 
 public class IntermediateChunk {

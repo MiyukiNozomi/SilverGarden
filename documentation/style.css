@@ -26,6 +26,10 @@ body {
   text-decoration: none;
 }
 
+.sidenav * {
+  color: #800080
+}
+
 /* Style the header with a grey background and some padding */
 .header {
   position: fixed;

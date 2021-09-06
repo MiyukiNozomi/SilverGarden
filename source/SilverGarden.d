@@ -214,6 +214,8 @@ public class SilverCore {
 
 				if (current.Token == "(") {
 					//in case its a method
+					definement = new IntermediateChunk(IntermediateOp.DefineMethod, name);
+					
 					while (true) {
 						current = scanner.NextToken();
 						if (current.Token == ")")
@@ -225,10 +227,32 @@ public class SilverCore {
 						}
 
 						if (current.Type == TokenType.Identifier) {
-							string type, name;
+							string atype, aname;
+
+							if(!Definition(aname, atype)) {
+								return;
+							}
+
+							definement.children.add(new IntermediateChunk(IntermediateOp.ArgumentDefine, atype ~ "," ~ aname));
 							
+							if (current.Token == ",") {
+								//ok
+							} else if (current.Token == ")") {
+								break;
+							} else {
+								PrintError(UnexpectedToken);
+								writeln("Expected a valid method.");
+								return;
+							}
 						}
 					}
+
+					if (!Match(")", "Expected a RPAREN",UnexpectedToken))
+						return;
+					if (!Match("{", "Expected a BLOCK ENTRY.", UnexpectedToken))
+						return;
+
+					Block(definement);
 				} else if (current.Token == "=") {
 					//in case its a expression
 				} else if (current.Token == ";") {

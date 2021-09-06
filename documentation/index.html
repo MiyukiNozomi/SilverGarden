@@ -7,33 +7,51 @@
 	<!-- main -->
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="editor.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
+	<link rel="stylesheet" href="tree.css">
+	<script src="src/highlight.min.js"></script>
 </head>
 
 <body>
-<div class="header">
-	<a href="index.html" class="logo">
-		<img src="images/silvergarden.png"></a>
-	<div class="header-right">
-		<a class="active" href="#home">Home</a>
-		<a href="#contact">Contact</a>
-		<a href="#about">About</a>
+	<div class="header">
+		<a href="index.html" class="logo">
+			<img src="images/silvergarden.png"></a>
+		<div class="header-right">
+			<a class="active" href="download.html">Download</a>
+			<a href="https://discord.gg/EGgu48jPPD">Discord</a>
+		</div>
 	</div>
-</div>
 
-<div class="sidenav">
-	<a href="FrontEnd/ErrorCodes.html">Error Code Reference</a>
-</div>
+	<div class="sidenav">
+		<a href="FrontEnd/ErrorCodes.html">Error Code Reference</a>
+		<a href="FrontEnd/Namespaces.html">Namespaces</a>
+		<a href="FrontEnd/Fields.html">Fields</a>
+		<a href="FrontEnd/Methods.html">Methods</a>
+		<ul id="myUL">
+			<li><span class="caret">Default Library</span>
+				<ul class="nested">
+					<li>Built-in Types</li>
+					<li><span class="caret">Silver.Core</span>
+						<ul class="nested">
+							<li>Console</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
 
-<div class="content">
-<h3>Welcome to the Reisen Programming Language!</h3>
-<p>		My Object-Oriented Programming Language, that is designed to be<br/>
-transpiled to C++, C and D!, the original implementation (current implementation)<br/>
-is fully written in D. also, you can check up the source code at <a href="https://github.com/Miyuki/SilverGarden">my GitHub Page</a>.</p>
+	<div class="content">
+		<h3>Welcome to the SilverGarden Programming Language!</h3>
+		<p> My Object-Oriented Programming Language, that is designed to be<br />
+			transpiled to C++, C and D!, the original implementation (current implementation)<br />
+			is fully written in D. also, you can check up the source code at <a
+				href="https://github.com/Miyuki/SilverGarden">my GitHub page</a>.</p>
 
-<h3>Hello, World!</h3>
-<p>a basic: "Hello, World!"</p>
-<pre class="editor">
+		<h3>"Hello, World!" Example</h3>
+		<p>a basic: "Hello, World!", unlike java you dont need to do it inside a class.<br/>
+		your main method does not require a strict name!, you only need the <strong class="hljs-template-variable">@Entry</strong> Annotation<br/>
+		and an argument which can be none or <strong>String[] args</strong>.</p> 
+		<pre class="editor">
 <code class="preview hljs" contenteditable="true" aria-label="editor">
 namespace "Silver.Examples"
 
@@ -44,8 +62,9 @@ public @Entry Main() {
 }
 </code>
 </pre>
-<script>hljs.highlightAll();</script>
-</div>
+		<script src="src/tree.js"></script>
+		<script>hljs.highlightAll();</script>
+	</div>
 </body>
 
 </html>

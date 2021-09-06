@@ -91,7 +91,7 @@ public class Lexer {
 		tokenDatas.add(new TokenData("^(\".*\")",TokenType.StringLiteral));
 		tokenDatas.add(new TokenData("^(\'.*\')",TokenType.CharLiteral));
         
-        string[] symbols = ["\\{","\\}","\\[","\\]","\\(","\\)",";"];
+        string[] symbols = ["\\{","\\}","\\[","\\]","\\(","\\)",";","\\,"];
         
 		foreach(string t ; symbols) {
 			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Symbol));
