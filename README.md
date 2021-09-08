@@ -7,7 +7,7 @@ ended up being usable...) it started as NML, then Naramin, and
 then NAML, and recently, MerryLang. from MerryLang to Shinoa,
 and from Shinoa. to Reisen. and from Reisen, to what you have today.
 
-see https://miyukinozomi.github.io/SilverGarden/docs/index.html
+see https://miyukinozomi.github.io/SilverGarden/documentation/index.html
 
 # Todo list
 
