@@ -11,6 +11,9 @@ public enum IntermediateOp {
     DefineObject = "df",
     DefineMethod = "fdf",
     ArgumentDefine = "ag",
+    Assign = "as",
+    Push = "psh",
+    Operator = "op",
 }
 
 public class IntermediateChunk {
@@ -23,5 +26,11 @@ public class IntermediateChunk {
         children = new ArrayList!IntermediateChunk();
         this.operation = operation;
         this.value = value;
+    }
+
+    public IntermediateChunk copy() {
+        IntermediateChunk chunk =  new IntermediateChunk(operation, value);
+        chunk.children = this.children;
+        return chunk;
     }
 }

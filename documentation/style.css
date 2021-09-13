@@ -3,6 +3,20 @@ body {
   font-family: "Roboto Slab", sans-serif;
 }
 
+.good-pratice-time {
+  background-color: hsl(60, 100%, 75%);
+  color :crimson;
+  width: 400px;
+  padding: 12px;
+  border: 1px solid #500040;
+  float: right;
+}
+
+.good-pratice-time pratice-entry {
+  margin: 0;
+  font-style: italic;
+}
+
 .content {
   padding-left: 220px;
   padding-top: 100px;

@@ -11,26 +11,39 @@ module SilverGarden.Lexer;
 
 import std.string;
 import std.regex;
+import std.algorithm;
 import java.util.List;
 
 import SilverGarden.Helpers;
 
 enum TokenType {
-    StringLiteral,
-    CharLiteral,
-    IntegerLiteral,
-    DoubleLiteral,
-    HexadecimalLiteral,
-    Identifier,
-    Operator,
-    Symbol,
+    StringLiteral = "STR",
+    CharLiteral = "CHR",
+    IntegerLiteral = "INT",
+	FloatLiteral = "FLT",
+    DoubleLiteral = "DLT",
+    HexadecimalLiteral = "HEX", 
+    Identifier = "ID",
+    Symbol = "SYB",
+
+	Equal = "=",
+	Plus = "+",
+	PlusEqual = "+=",
+	Minus = "-",
+	MinusEqual = "-=",
+	Divide = "/",
+	DivideEqual = "/=",
+	Multiply = "*",
+	MultiplyEqual = "*=",
+	Percentage = "%",
+	PercentageEqual = "%=",
 
 	// for standartization
-	AccessModifier,
+	AccessModifier = "am",
 
-	BeginingOfFile,
-    EndOfFile,
-    Invalid
+	BeginingOfFile = "bof",
+    EndOfFile = "eof",
+    Invalid = "iv"
 }
 
 public class TokenData {
@@ -85,6 +98,7 @@ public class Lexer {
         this.tokenDatas = new ArrayList!TokenData();
 
         tokenDatas.add(new TokenData("^([@_a-zA-Z][a-zA-Z0-9_]*)",TokenType.Identifier));
+		tokenDatas.add(new TokenData("^((-)?[0-9]\\.[0-9]+)f",TokenType.FloatLiteral));
 		tokenDatas.add(new TokenData("^((-)?[0-9]\\.[0-9]+)",TokenType.DoubleLiteral));
 		tokenDatas.add(new TokenData("^((-)?0x[0-9]+)",TokenType.HexadecimalLiteral));
 		tokenDatas.add(new TokenData("^((-)?[0-9]+)",TokenType.IntegerLiteral));
@@ -97,12 +111,17 @@ public class Lexer {
 			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Symbol));
 		}
 
-        string[] operators = ["\\*","\\-","\\+","\\/","\\%","\\=",
-        					"\\^", "\\|", "\\&", "\\<"];
-        
-		foreach(string t ; operators) {
-			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Operator));
-		}
+		tokenDatas.add(new TokenData("^(\\=)", TokenType.Equal));
+		tokenDatas.add(new TokenData("^(\\+)", TokenType.Plus));
+		tokenDatas.add(new TokenData("^(\\+\\=)", TokenType.PlusEqual));
+		tokenDatas.add(new TokenData("^(\\-)", TokenType.Minus));
+		tokenDatas.add(new TokenData("^(\\-\\=)", TokenType.MinusEqual));
+		tokenDatas.add(new TokenData("^(\\*)", TokenType.Multiply));
+		tokenDatas.add(new TokenData("^(\\*\\=)", TokenType.MultiplyEqual));
+		tokenDatas.add(new TokenData("^(\\/)", TokenType.Divide));
+		tokenDatas.add(new TokenData("^(\\/\\=)", TokenType.DivideEqual));
+		tokenDatas.add(new TokenData("^(\\%)", TokenType.Percentage));
+		tokenDatas.add(new TokenData("^(\\%\\=)", TokenType.PercentageEqual));
     }
     
     public: Token NextToken() {

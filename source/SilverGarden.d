@@ -20,7 +20,8 @@ import SilverGarden.Intermediate;
 //error codes
 const string UnexpectedToken = "10002";
 const string InvalidBody = "10003";
-
+const string InvalidStructure = "10004";
+const string InvalidFactor = "10005";
 //warning codes
 const string DeprecatedOperation = "20001";
 
@@ -254,13 +255,18 @@ public class SilverCore {
 
 					Block(definement);
 				} else if (current.Token == "=") {
-					//in case its a expression
+					//in case its an expression
+					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name);
+
+					IntermediateChunk assignOp = new IntermediateChunk(IntermediateOp.Assign, "");
+					Expression(assignOp);
+					definement.children.add(assignOp);
 				} else if (current.Token == ";") {
 					//in case its just a field declaration
 					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name);
 				} else {
 					PrintError(UnexpectedToken);
-					writeln("Expected a valid field structure, not \"",current.Token,"\"");
+					writeln("Expected a valid field structure, not \"",current.Token,"\""," type: ", current.Type);
 					return;
 				}
 
@@ -272,7 +278,57 @@ public class SilverCore {
 		}
 	}
 
+	private IntermediateChunk Factor() {
+		Token tok = current;
+		if (current.Type == TokenType.IntegerLiteral ||
+			current.Type == TokenType.FloatLiteral ||
+			current.Type == TokenType.DoubleLiteral ||
+			current.Type == TokenType.HexadecimalLiteral ||
+			current.Type == TokenType.StringLiteral) {
+			current = scanner.NextToken();
+			
+			return new IntermediateChunk(IntermediateOp.Push, tok.Token ~ "," ~ tok.Type);
+		} else {
+			PrintError(InvalidFactor);
+			writeln("Invalid Factor");
+		}
+		return new IntermediateChunk(IntermediateOp.Push, "0");
+	}
 
+	private void BinaryOp(IntermediateChunk root) {
+		IntermediateChunk left = Factor();
+
+		while (this.current.Type == TokenType.Minus ||
+			this.current.Type == TokenType.MinusEqual ||
+			this.current.Type == TokenType.Plus ||
+			this.current.Type == TokenType.PlusEqual ||
+			this.current.Type == TokenType.Multiply ||
+			this.current.Type == TokenType.MultiplyEqual ||
+			this.current.Type == TokenType.Divide ||
+			this.current.Type == TokenType.DivideEqual ||
+			this.current.Type == TokenType.Percentage ||
+			this.current.Type == TokenType.PercentageEqual) {
+
+			string operation = current.Token;
+			current = scanner.NextToken();
+			IntermediateChunk right = Factor();
+			IntermediateChunk newOperation = new IntermediateChunk(IntermediateOp.Operator, operation);
+			newOperation.children.add(left.copy);
+			newOperation.children.add(right);
+			left = newOperation;
+		}
+		
+		root.children.add(left);
+	}
+
+	private void Expression(IntermediateChunk root) {
+		current = scanner.NextToken();
+		BinaryOp(root);
+		if (current.Token != ";") {
+			PrintError(UnexpectedToken);
+			writeln("Expected a semicolon");
+		}
+	}
 
 	private bool Definition(out string name, out string type) {
 		//first, type.
@@ -280,7 +336,7 @@ public class SilverCore {
 		type = "";
 
 		if (current.Type != TokenType.Identifier) {
-			PrintError(UnexpectedToken);
+			PrintError(InvalidStructure);
 			writeln("Expected a valid type.");
 			return false;
 		}
@@ -305,7 +361,7 @@ public class SilverCore {
 				current = scanner.NextToken();
 				type ~= "[]";
 			} else {
-				PrintError(UnexpectedToken);
+				PrintError(InvalidStructure);
 				writeln("tutorial on how to make an array: " ~ type ~ "[], done.");
 				return false;
 			}
@@ -315,7 +371,7 @@ public class SilverCore {
 		if (current.Type == TokenType.Identifier) { // valid
 			name = current.Token;
 		} else { // invalid.
-			PrintError(UnexpectedToken);
+			PrintError(InvalidStructure);
 			writeln("Expected a valid name :(");
 			return false;
 		}
@@ -328,7 +384,7 @@ public class SilverCore {
 	private void Block(IntermediateChunk Root) {
 		while (true) {
 			if (current.Type == TokenType.EndOfFile) {
-				PrintError(UnexpectedToken);
+				PrintError(InvalidBody);
 				writeln("Expected a RPAREN.");
 				break;
 			}
@@ -340,7 +396,6 @@ public class SilverCore {
 			current = scanner.NextToken();
 		}
 	} 
-
 	//just to have a clean parser 
 	private bool Match(TokenType expected,string error, string code) {
 		if (current.Type != expected) { 

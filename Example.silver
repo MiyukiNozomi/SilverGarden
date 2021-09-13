@@ -1,13 +1,7 @@
-namespace "SilverGarden.Example"
-
-import "Silver.Core"
-
-public int a = 0;
-
-public void test(String a, int b, void* c) {
+public void a(int something) {
     
 }
 
-public @Entry EntryPoint(String[] something) {
-	
+public @Entry Test() {
+
 }

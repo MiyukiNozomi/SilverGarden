@@ -1,0 +1,73 @@
+</html>
+<html>
+
+<head>
+	<title>SilverGarden - Documentation</title>
+
+	<!-- main -->
+	<link rel="stylesheet" href="../style.css">
+	<link rel="stylesheet" href="../editor.css">
+	<link rel="stylesheet" href="../tree.css">
+	<script src="../src/highlight.min.js"></script>
+</head>
+
+<body>
+	<div class="header">
+		<a href="index.html" class="logo">
+			<img src="../images/silvergarden.png"></a>
+		<div class="header-right">
+			<a class="active" href="../download.html">Download</a>
+			<a href="https://discord.gg/EGgu48jPPD">Discord</a>
+		</div>
+	</div>
+
+	<div class="sidenav">
+		<a href="ErrorCodes.html">Error Code Reference</a>
+		<a href="Fields.html">Fields</a>
+		<a href="Methods.html">Methods</a>
+		<ul id="myUL">
+			<li><span class="caret">Default Library</span>
+				<ul class="nested">
+					<li>Built-in Types</li>
+					<li><span class="caret">Silver.Core</span>
+						<ul class="nested">
+							<li>Console</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+
+	<div class="content">
+		<h3>Namespaces</h3>
+		
+        <p>In SilverGarden, Your program containing a billion source files will<br/>
+        turn into a single SilverLib file. which then can be turned into a runnable program.</p>
+
+        <h3>Avoiding a mess with namespaces</h3>
+        <p>Now you can probably imagine the mess it would be. <br/>
+        but silver garden comes with a fancy  way of avoid that mess. which is<br/>
+        <strong>namespaces</strong>!
+        </p>
+        <p>its only your ordinary namespaces from C#, TS and others, but,<br/>
+        unlike these languages, you need to specify your namespace with a string literal. like this:</p>
+
+		<pre class="editor">
+<code class="preview hljs" contenteditable="true" aria-label="editor">namespace "My.New.Fancy.Namespace"
+</code>
+</pre>
+        <div class="good-pratice-time">
+            <pratice-entry>Good Pratice time!</pratice-entry>
+            <h2>Avoid using the Default Namespace</h2>
+            <p>The default namespace is a unsafe place, that is <br/>
+                only there to be used for objects that are located in the<br/>
+            target export language! so, don't use it as your namespace >:(
+            </p>
+        </div>
+		<script src="src/tree.js"></script>
+		<script>hljs.highlightAll();</script>
+	</div>
+</body>
+
+</html>

@@ -1,4 +1,5 @@
 import std.stdio;
+import std.algorithm;
 
 import java.util.List;
 
@@ -20,8 +21,24 @@ void PrintAndList(string startTab, List!IntermediateChunk chunkList) {
 		writeln(chunk.value);
 
 		if (chunk.children.size() > 0) {
-			PrintAndList(startTab ~ "	",chunk.children);
+			PrintAndList(startTab ~ "   ",chunk.children);
 		}
+	}
+}
+
+string code = ""; //temporary
+
+void RecursiveWrite(string startWhitespace,List!IntermediateChunk chunkList) { // TODO remake this.
+	for (int i = 0; i < chunkList.size(); i++) {
+		IntermediateChunk chunk = chunkList.get(i);
+
+		code ~= startWhitespace ~ chunk.operation ~ " \"" ~ chunk.value ~ "\"\n";
+
+		if (chunk.children.size() > 0) {
+			RecursiveWrite(startWhitespace ~ " ", chunk.children);
+		}
+
+		code ~= startWhitespace ~ "ret\n";
 	}
 }
 
@@ -43,17 +60,27 @@ void main(string[] args) {
 		return;
 	}
 
-	import std.file : readText;
+	import std.file : readText, write;
 
 	List!IntermediateChunk list = new ArrayList!IntermediateChunk();
 
 	SilverCore core = new SilverCore();
 
-	core.Compile(readText(args[1]), args[1]);
+	if (args[1].endsWith(".silver")) {
+		writeln("Hey! do NOT add an extension!");
+		writeln("SilverC will already do the extension job.");
+	}
+
+	string filename = args[1];
+
+	core.Compile(readText(filename ~ ".silver"), filename ~ ".silver");
 
 	list.add(core.CurrentCode);
 
-	PrintAndList("", list);
+	//PrintAndList("", list); no more debbunging
+	RecursiveWrite("",list);
+
+	write(filename ~ ".sclass",code);
 
 	Console.resetColor();
 }
