@@ -14,6 +14,11 @@ public enum IntermediateOp {
     Assign = "as",
     Push = "psh",
     Operator = "op",
+    IfStatment = "if",
+    WhileStatment = "whl",
+    ForStatment = "fr",
+    CheckExpression = "chex",
+    CheckBlock = "chkb",
 }
 
 public class IntermediateChunk {

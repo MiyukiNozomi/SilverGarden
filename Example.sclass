@@ -1,8 +1,18 @@
 dnm "Default"
- fdf "a"
-  ag "int,something"
+ fdf "void,a,public"
+  if ""
+   chex ""
+    psh "1,INT"
+    ret
+   ret
+   chkb ""
+    df "int,a,private"
+     as ""
+      psh "0,INT"
+      ret
+     ret
+    ret
+   ret
   ret
- ret
- mn "Test"
  ret
 ret

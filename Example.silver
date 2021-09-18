@@ -1,7 +1,5 @@
-public void a(int something) {
-    
-}
-
-public @Entry Test() {
-
+public void a() {
+    if (1) { 
+        private int a = 0;
+    }
 }

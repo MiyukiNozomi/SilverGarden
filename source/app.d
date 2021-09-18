@@ -7,6 +7,7 @@ import SilverGarden.Core;
 import SilverGarden.Intermediate;
 import SilverGarden.Console;
 import SilverGarden.Lexer;
+import SilverGarden.Helpers;
 
 string __silver__ = "0400001";
 
@@ -36,11 +37,12 @@ void RecursiveWrite(string startWhitespace,List!IntermediateChunk chunkList) { /
 
 		if (chunk.children.size() > 0) {
 			RecursiveWrite(startWhitespace ~ " ", chunk.children);
+			code ~= startWhitespace ~ "ret\n";
 		}
-
-		code ~= startWhitespace ~ "ret\n";
 	}
 }
+
+bool DebugCode = false;
 
 void main(string[] args) {
 	InitConsole();
@@ -60,27 +62,46 @@ void main(string[] args) {
 		return;
 	}
 
+	for (int i = 2; i < args.length; i++) {
+		if (args[i] == "/debug-c" || args[i] == "--debug-c") {
+			DebugCode = true;
+		} else {
+			Console.setColor(Coloring.Red, Coloring.Black);
+			write("Error: ");
+			Console.setColor(Coloring.White, Coloring.Black);
+			writeln("Unrecognized Option: ", args[i]);
+		}
+	}
+
 	import std.file : readText, write;
 
 	List!IntermediateChunk list = new ArrayList!IntermediateChunk();
 
 	SilverCore core = new SilverCore();
 
-	if (args[1].endsWith(".silver")) {
+	string filename = args[1];
+
+	if (filename.endsWith(".silver")) {
 		writeln("Hey! do NOT add an extension!");
 		writeln("SilverC will already do the extension job.");
+		filename = filename.subString(0, filename.length - 7);
+		writeln("Extension removed, it's now: ", filename);
 	}
-
-	string filename = args[1];
 
 	core.Compile(readText(filename ~ ".silver"), filename ~ ".silver");
 
 	list.add(core.CurrentCode);
 
-	//PrintAndList("", list); no more debbunging
-	RecursiveWrite("",list);
+	if (DebugCode) {
+		PrintAndList("", list);
+	} else {
+		RecursiveWrite("",list);
+	}
 
 	write(filename ~ ".sclass",code);
+
+	Console.setColor(Coloring.LightBlue, Coloring.Black);
+	writeln("Compilation Finished! :D");
 
 	Console.resetColor();
 }

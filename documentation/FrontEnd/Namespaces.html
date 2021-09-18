@@ -13,7 +13,7 @@
 
 <body>
 	<div class="header">
-		<a href="index.html" class="logo">
+		<a href="../index.html" class="logo">
 			<img src="../images/silvergarden.png"></a>
 		<div class="header-right">
 			<a class="active" href="../download.html">Download</a>
@@ -54,9 +54,8 @@
         unlike these languages, you need to specify your namespace with a string literal. like this:</p>
 
 		<pre class="editor">
-<code class="preview hljs" contenteditable="true" aria-label="editor">namespace "My.New.Fancy.Namespace"
-</code>
-</pre>
+		<code class="preview hljs" contenteditable="true" aria-label="editor">namespace "My.New.Fancy.Namespace"</code>
+		</pre>
         <div class="good-pratice-time">
             <pratice-entry>Good Pratice time!</pratice-entry>
             <h2>Avoid using the Default Namespace</h2>
@@ -65,6 +64,35 @@
             target export language! so, don't use it as your namespace >:(
             </p>
         </div>
+		<h2>Imports</h2>
+		<p>	Of course, namespaces would be unusable without imports.<br/>
+		an import statment in SilverGarden requires a string parameter,<br/>
+		(its exacly the same syntax as the namespace statment)</p>
+		<h3>Import Example</h3>
+		<pre class="editor">
+		<code class="preview hljs" contenteditable="true" aria-label="editor">import "ImportMe.Namespace"</code>
+		</pre>
+		<h3>Extern Imports</h3>
+		<p>
+		SilverGarden provides a basic "multilanguage" standard library,<br/>
+		which is simply not enough, so, you have extern imports.
+		<br/>
+			Extern Imports change from target language to target language, for example,<br/>
+		if the target language is C++, it will be turned into a include preprocessor instruction.	
+		</p>
+		<h3>The Extern Import Syntax</h3>
+		<p>its exacly like the normal import syntax, but the difference is that<br/>
+		a "extern" keyword is required before the object.</p>
+		<pre class="editor">
+		<code class="preview hljs" contenteditable="true" aria-label="editor">import extern "stdio.h"</code>
+		</pre>
+        <div class="good-pratice-time">
+            <pratice-entry>Good Pratice time!</pratice-entry>
+            <h2>Use <a href="LanguageChecks.html">LanguageChecks!</a></h2>
+            <p>if you want to avoid compilation errors in the backend of your <br/>
+			silver Garden library, use language checks with your extern imports. </p>
+        </div>
+		<br/>
 		<script src="src/tree.js"></script>
 		<script>hljs.highlightAll();</script>
 	</div>

@@ -130,7 +130,23 @@ public class SilverCore {
 
 				Root.children.add(languageCheck);
 			}
+		} else if (current.Token == "if" || current.Token == "while") { //generic check operation, can be a loop or not
+			IntermediateChunk expression = new IntermediateChunk(current.Token == "while" ? IntermediateOp.WhileStatment : IntermediateOp.IfStatment, "");
+			current = scanner.NextToken();
+
+			CheckBlock(expression);
+			
+			if (!Match("{", "Expected a LPAREN", UnexpectedToken))
+				return;
+
+			IntermediateChunk expBlock = new IntermediateChunk(IntermediateOp.CheckBlock, "");
+
+			Block(expBlock);
+			expression.children.add(expBlock);
+
+			Root.children.add(expression);
 		} else if (current.Type == TokenType.AccessModifier) {
+			string accessType = current.Token;
 			current = scanner.NextToken();
 
 			/*
@@ -215,7 +231,7 @@ public class SilverCore {
 
 				if (current.Token == "(") {
 					//in case its a method
-					definement = new IntermediateChunk(IntermediateOp.DefineMethod, name);
+					definement = new IntermediateChunk(IntermediateOp.DefineMethod, type ~ "," ~ name ~ "," ~ accessType);
 					
 					while (true) {
 						current = scanner.NextToken();
@@ -256,14 +272,14 @@ public class SilverCore {
 					Block(definement);
 				} else if (current.Token == "=") {
 					//in case its an expression
-					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name);
+					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name ~ "," ~ accessType);
 
 					IntermediateChunk assignOp = new IntermediateChunk(IntermediateOp.Assign, "");
 					Expression(assignOp);
 					definement.children.add(assignOp);
 				} else if (current.Token == ";") {
 					//in case its just a field declaration
-					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name);
+					definement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name ~ "," ~ accessType);
 				} else {
 					PrintError(UnexpectedToken);
 					writeln("Expected a valid field structure, not \"",current.Token,"\""," type: ", current.Type);
@@ -328,6 +344,20 @@ public class SilverCore {
 			PrintError(UnexpectedToken);
 			writeln("Expected a semicolon");
 		}
+	}
+
+	private void CheckBlock(IntermediateChunk root) {
+		if(!Match("(", "Expected a RPAREN", InvalidBody))
+			return;
+
+		IntermediateChunk checkExpression = new IntermediateChunk(IntermediateOp.CheckExpression, "");
+
+		BinaryOp(checkExpression);
+
+		if (!Match(")", "Expected a LPAREN", InvalidBody))
+			return;
+
+		root.children.add(checkExpression);
 	}
 
 	private bool Definition(out string name, out string type) {
