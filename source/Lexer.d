@@ -26,21 +26,7 @@ enum TokenType {
     Identifier = "ID",
     Symbol = "SYB",
 
-	Equal = "=",
-	Plus = "+",
-	PlusEqual = "+=",
-	Minus = "-",
-	MinusEqual = "-=",
-	Divide = "/",
-	DivideEqual = "/=",
-	Multiply = "*",
-	MultiplyEqual = "*=",
-	Percentage = "%",
-	PercentageEqual = "%=",
-	LessThan = "<",
-	BiggerThan = ">",
-	LessThanEqual = "<=",
-	BiggerThanEqual = ">=",
+	Operator = "op",
 
 	// for standartization
 	AccessModifier = "am",
@@ -115,22 +101,14 @@ public class Lexer {
 			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Symbol));
 		}
 
-		tokenDatas.add(new TokenData("^(\\=)", TokenType.Equal));
-		tokenDatas.add(new TokenData("^(\\+)", TokenType.Plus));
-		tokenDatas.add(new TokenData("^(\\+\\=)", TokenType.PlusEqual));
-		tokenDatas.add(new TokenData("^(\\-)", TokenType.Minus));
-		tokenDatas.add(new TokenData("^(\\-\\=)", TokenType.MinusEqual));
-		tokenDatas.add(new TokenData("^(\\*)", TokenType.Multiply));
-		tokenDatas.add(new TokenData("^(\\*\\=)", TokenType.MultiplyEqual));
-		tokenDatas.add(new TokenData("^(\\/)", TokenType.Divide));
-		tokenDatas.add(new TokenData("^(\\/\\=)", TokenType.DivideEqual));
-		tokenDatas.add(new TokenData("^(\\%)", TokenType.Percentage));
-		tokenDatas.add(new TokenData("^(\\%\\=)", TokenType.PercentageEqual));
-		
-		tokenDatas.add(new TokenData("^(\\>)", TokenType.LessThan));
-		tokenDatas.add(new TokenData("^(\\>\\=)", TokenType.LessThanEqual));
-		tokenDatas.add(new TokenData("^(\\<)", TokenType.BiggerThan));
-		tokenDatas.add(new TokenData("^(\\<\\=)", TokenType.BiggerThanEqual));
+        string[] operators = ["\\+\\+","\\-\\-", "\\%\\%", "\\*\\*", "\\^\\^",
+							  "\\+","\\-","\\%","\\/", "\\*","\\^", "\\=",
+							  "\\+\\=","\\-\\=","\\%\\=","\\/\\=", "\\*\\=", "\\^=",
+							  "\\>","\\>\\=", "\\<", "\\=<"];
+        
+		foreach(string t ; operators) {
+			tokenDatas.add(new TokenData("^(" ~ t ~ ")", TokenType.Operator));
+		}
     }
     
     public: Token NextToken() {

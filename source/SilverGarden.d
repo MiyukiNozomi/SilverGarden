@@ -156,11 +156,13 @@ public class SilverCore {
 			}
 
 			IntermediateChunk forDefinement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name ~ ",local");
-		
+			writeln(current.Token);
 			if (current.Token == "=") {
 				Expression(forDefinement);
 			} else {
-				Match(";", "Expected a semicolon", InvalidStructure);
+				if(!Match(";", "Expected a semicolon", InvalidStructure)) {
+					return;
+				}
 			}
 
 			IntermediateChunk forCondition = new IntermediateChunk(IntermediateOp.CheckExpression, "");
@@ -330,9 +332,11 @@ public class SilverCore {
 			current = scanner.NextToken();
 			
 			return new IntermediateChunk(IntermediateOp.Push, tok.Token ~ "," ~ tok.Type);
+		} else if (current.Type == TokenType.Identifier) {
+			return new IntermediateChunk(IntermediateOp.Push, tok.Token);
 		} else {
 			PrintError(InvalidFactor);
-			writeln("Invalid Factor");
+			writeln("Invalid Factor \"", current.Token, " : ", current.Type,"\"");
 		}
 		return new IntermediateChunk(IntermediateOp.Push, "0");
 	}
@@ -340,16 +344,7 @@ public class SilverCore {
 	private void BinaryOp(IntermediateChunk root) {
 		IntermediateChunk left = Factor();
 
-		while (this.current.Type == TokenType.Minus ||
-			this.current.Type == TokenType.MinusEqual ||
-			this.current.Type == TokenType.Plus ||
-			this.current.Type == TokenType.PlusEqual ||
-			this.current.Type == TokenType.Multiply ||
-			this.current.Type == TokenType.MultiplyEqual ||
-			this.current.Type == TokenType.Divide ||
-			this.current.Type == TokenType.DivideEqual ||
-			this.current.Type == TokenType.Percentage ||
-			this.current.Type == TokenType.PercentageEqual) {
+		while (this.current.Type == TokenType.Operator) {
 
 			string operation = current.Token;
 			current = scanner.NextToken();
@@ -363,13 +358,15 @@ public class SilverCore {
 		root.children.add(left);
 	}
 
-	private void Expression(IntermediateChunk root) {
+	private bool Expression(IntermediateChunk root) {
 		current = scanner.NextToken();
 		BinaryOp(root);
 		if (current.Token != ";") {
 			PrintError(UnexpectedToken);
-			writeln("Expected a semicolon");
+			writeln("Expected a semicolon, not \"", current.Token, "\"");
+			return false;
 		}
+		return true;
 	}
 
 	private void CheckBlock(IntermediateChunk root) {
