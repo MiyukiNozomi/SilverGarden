@@ -37,6 +37,10 @@ enum TokenType {
 	MultiplyEqual = "*=",
 	Percentage = "%",
 	PercentageEqual = "%=",
+	LessThan = "<",
+	BiggerThan = ">",
+	LessThanEqual = "<=",
+	BiggerThanEqual = ">=",
 
 	// for standartization
 	AccessModifier = "am",
@@ -122,6 +126,11 @@ public class Lexer {
 		tokenDatas.add(new TokenData("^(\\/\\=)", TokenType.DivideEqual));
 		tokenDatas.add(new TokenData("^(\\%)", TokenType.Percentage));
 		tokenDatas.add(new TokenData("^(\\%\\=)", TokenType.PercentageEqual));
+		
+		tokenDatas.add(new TokenData("^(\\>)", TokenType.LessThan));
+		tokenDatas.add(new TokenData("^(\\>\\=)", TokenType.LessThanEqual));
+		tokenDatas.add(new TokenData("^(\\<)", TokenType.BiggerThan));
+		tokenDatas.add(new TokenData("^(\\<\\=)", TokenType.BiggerThanEqual));
     }
     
     public: Token NextToken() {

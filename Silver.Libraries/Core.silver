@@ -5,3 +5,16 @@ ifexp "C" {
 }
 
 //todo finish this later and add classes.
+
+public class PrintStream {
+	public void println(void* message) {
+		ifexp "C" {
+			printf("Hello World!");
+		}
+	}
+}
+
+public singleton class System {
+	public PrintStream out;
+	public PrintStream end;
+}

@@ -136,7 +136,7 @@ public class SilverCore {
 
 			CheckBlock(expression);
 			
-			if (!Match("{", "Expected a LPAREN", UnexpectedToken))
+			if (!Match("{", "Expected a LPAREN", InvalidBody))
 				return;
 
 			IntermediateChunk expBlock = new IntermediateChunk(IntermediateOp.CheckBlock, "");
@@ -145,6 +145,32 @@ public class SilverCore {
 			expression.children.add(expBlock);
 
 			Root.children.add(expression);
+		} else if (current.Token == "for") {
+			current = scanner.NextToken();
+			Match("(","Expected a LPAREN", InvalidBody);
+
+			string name, type;
+
+			if(!Definition(name, type)) {
+				return;
+			}
+
+			IntermediateChunk forDefinement = new IntermediateChunk(IntermediateOp.DefineObject, type ~ "," ~ name ~ ",local");
+		
+			if (current.Token == "=") {
+				Expression(forDefinement);
+			} else {
+				Match(";", "Expected a semicolon", InvalidStructure);
+			}
+
+			IntermediateChunk forCondition = new IntermediateChunk(IntermediateOp.CheckExpression, "");
+
+			Expression(forCondition);
+
+			IntermediateChunk forOperation = new IntermediateChunk(IntermediateOp.CheckExpression, "");
+
+			Expression(forOperation);
+
 		} else if (current.Type == TokenType.AccessModifier) {
 			string accessType = current.Token;
 			current = scanner.NextToken();

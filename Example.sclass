@@ -1,18 +1,3 @@
 dnm "Default"
- fdf "void,a,public"
-  if ""
-   chex ""
-    psh "1,INT"
-    ret
-   ret
-   chkb ""
-    df "int,a,private"
-     as ""
-      psh "0,INT"
-      ret
-     ret
-    ret
-   ret
-  ret
- ret
+ fdf "@EntryPoint,A,public"
 ret
