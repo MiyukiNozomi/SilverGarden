@@ -1,0 +1,57 @@
+
+body {
+    margin: 0;
+    color: #353833;
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+}
+
+.headbar {
+    background-color: #4D7A97;
+    color: #FFFFFF;
+    padding: 1.0em 1.5em 1.4em 1.8em;
+    height: auto;
+    /* height: 1.8em; */
+    font-size: 11px;
+    margin: 0;
+}
+
+.content {
+    margin: 16px;
+    position: relative;
+    font-size: 12px;
+}
+
+p {
+    color: #352f28;
+    line-height: 17px;
+}
+
+.vspace {
+    margin-top: 10px;
+}
+
+a img {
+    border: 0px;
+}
+
+a {
+    color: #145d7b;
+    text-decoration: none;
+}
+
+td, th {
+    vertical-align: top;
+    padding: 0px;
+}
+
+table {
+    border: 0px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
