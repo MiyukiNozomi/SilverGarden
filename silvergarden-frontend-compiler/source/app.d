@@ -4,6 +4,8 @@ import std.algorithm;
 import silver.utils.coloring;
 import silver.utils.helpers;
 
+import silverc.settings;
+
 void main(string[] args) {
 	InitConsole();
 
@@ -14,6 +16,8 @@ void main(string[] args) {
 	Console.setColor(Coloring.White, Coloring.Black);
 
 	writeln(" - IL Compiler");
+	Console.setColor(Coloring.Yellow, Coloring.Black);
+	writeln("Created by Miyuki, https://github.com/MiyukiNozomi/SilverGarden");
 
 	if (args.length <= 1) {
 		Console.setColor(Coloring.LightRed, Coloring.Black);
@@ -30,6 +34,26 @@ void main(string[] args) {
 		return;
 	}
 	writeln();
+
+	//parsing arguments.
+
+	for (int i = 1; i < args.length; i++) {
+		string tempArg = args[i];
+
+		if (tempArg.startsWith("/") || tempArg.startsWith("-")) {
+			string argLine = tempArg.subString(1, tempArg.length);
+
+			if (argLine == "onlyTokens" || argLine == "Ot") {
+				Settings.OnlyTokens = true;
+			} else {
+				Console.setColor(Coloring.LightRed, Coloring.Black);
+				write("Error! ");
+				Console.setColor(Coloring.White, Coloring.Black);
+				writeln("Unrecognized Argument: ", argLine);
+				writeln();
+			}
+		}
+	}
 
 	import std.file : readText;
 
@@ -48,7 +72,7 @@ void main(string[] args) {
 	try {
 		string fileContent = readText(filename ~ ".silver");
 
-		writeln("Text: ", fileContent);
+		
 		
 		writeln();
 		Console.setColor(Coloring.LightBlue, Coloring.Black);
