@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/silvergarden-intermediate
+silvergarden-intermediate.so
+silvergarden-intermediate.dylib
+silvergarden-intermediate.dll
+silvergarden-intermediate.a
+silvergarden-intermediate.lib
+silvergarden-intermediate-test-*
+*.exe
+*.o
+*.obj
+*.lst

@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"MiyukiNozomi"
+	],
+	"copyright": "Copyright © 2021, MiyukiNozomi",
+	"description": "SilverGarden Intermediate Code Project",
+	"license": "MIT",
+	"targetPath": "../",
+	"targetName": "IntermediateCode",
+	"targetType": "sourceLibrary",
+	"name": "silvergarden-intermediate"
+}

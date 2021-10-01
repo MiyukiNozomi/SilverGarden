@@ -1,0 +1,20 @@
+{
+	"authors": [
+		"MiyukiNozomi"
+	],
+	"copyright": "Copyright © 2021, MiyukiNozomi",
+	"description": "SilverGarden's Miyuki C Backend Compiler",
+	"license": "MIT",
+	"name": "miyuki-c",
+	"targetPath": "../",
+	"targetName": "miyuki-c",
+	"targetType": "executable",
+	"dependencies": {
+		"silvergarden-intermediate": {
+			"path":"../silvergarden-intermediate"
+		},
+		"silvergarden-frontend-compiler": {
+			"path":"../silvergarden-frontend-compiler"
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"authors": [
+		"MiyukiNozomi"
+	],
+	"copyright": "Copyright © 2021, MiyukiNozomi",
+	"description": "SilverGarden Official FrontEnd Compielr",
+	"license": "MIT",
+	"name": "silvergarden-frontend-compiler",
+	"targetPath": "../",
+	"targetName": "silverc",
+	"targetType": "executable",
+	"dependencies": {
+		"silvergarden-intermediate": {
+			"path":"../silvergarden-intermediate"
+		}
+	}
+}

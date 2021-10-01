@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/silvergarden-frontend-compiler
+silvergarden-frontend-compiler.so
+silvergarden-frontend-compiler.dylib
+silvergarden-frontend-compiler.dll
+silvergarden-frontend-compiler.a
+silvergarden-frontend-compiler.lib
+silvergarden-frontend-compiler-test-*
+*.exe
+*.o
+*.obj
+*.lst

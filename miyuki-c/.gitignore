@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/miyuki-c
+miyuki-c.so
+miyuki-c.dylib
+miyuki-c.dll
+miyuki-c.a
+miyuki-c.lib
+miyuki-c-test-*
+*.exe
+*.o
+*.obj
+*.lst
