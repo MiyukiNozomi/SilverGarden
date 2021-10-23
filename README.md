@@ -1,3 +1,10 @@
+# Closed.
+
+Silver Garden won't be a transpiled language anymore, so, after deciding
+to study LLVM, i archieved this repository.
+go to MiyukiNozomi/Silver to know the next project.
+See you in the real garden, good bye.
+
 # The Silver Garden
 
 	Welcome to the Silver Garden Programming Language.
